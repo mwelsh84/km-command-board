@@ -14,6 +14,11 @@ This GitHub Pages URL (`*.github.io`) is **public**. Anyone with the link can re
 - `.nojekyll` — serve the root as static files
 - `robots.txt` — `User-agent: *` / `Disallow: /` so crawlers do not index this URL
 
-## GitHub Pages (free personal account)
+## Turn the URL on (owner, once)
 
-The repository must stay **public**. Pages is enabled from branch `main`, folder `/` (root).
+Free personal GitHub Pages needs a **public** repo, then Pages from `main` / root:
+
+1. Settings → General → Danger Zone → Change repository visibility → **Public**
+2. Settings → Pages → Build and deployment → Source: **Deploy from a branch** → Branch **`main`** / folder **`/` (root)** → Save
+
+After that, https://mwelsh84.github.io/km-command-board/ is the live board. Later CoS updates are commits to `index.html` on `main`.
