@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="300">
-  <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta name="theme-color" content="#111114">
-  <title>KM Command · Michael + Kirsten</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Command · Live</title>
+  <meta http-equiv="refresh" content="300" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
   <style>
     :root {
       --bg: #111114;
       --card: #1c1c21;
+      --line: #2c2c34;
       --text: #f2f1ec;
       --muted: #9a988e;
       --need: #e8a23a;
@@ -19,455 +19,220 @@
       --hold: #c07a7a;
       --doc: #b89ad4;
       --link: #8eb4ff;
-      --line: rgba(242, 241, 236, 0.08);
-      --ink: rgba(17, 17, 20, 0.72);
     }
-
     * { box-sizing: border-box; }
-
-    html, body {
+    body {
       margin: 0;
+      font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
-      font: 15px/1.45 "Segoe UI", ui-sans-serif, system-ui, sans-serif;
     }
-
-    body {
-      min-height: 100vh;
-    }
-
-    a {
-      color: var(--link);
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.18em;
-    }
-
-    a:hover { color: var(--text); }
-
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 20px 48px;
-    }
-
-    header.top {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: var(--ink);
-      backdrop-filter: blur(14px);
+    header {
+      padding: 20px 24px 14px;
       border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: rgba(17,17,20,0.92); backdrop-filter: blur(8px); z-index: 10;
     }
-
-    .top-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 14px 20px 16px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px 16px;
-      align-items: start;
-    }
-
-    .kicker {
-      margin: 0 0 4px;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-    }
-
-    .stamp, .sub, .hint {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .hint { grid-column: 1 / -1; }
-
-    .live {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 2px;
-      padding: 6px 11px 6px 9px;
-      border: 1px solid rgba(125, 206, 138, 0.35);
-      border-radius: 999px;
-      background: rgba(125, 206, 138, 0.08);
-      color: var(--ok);
-      font-size: 12px;
-      font-weight: 650;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .live .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--ok);
-      box-shadow: 0 0 0 0 rgba(125, 206, 138, 0.7);
-      animation: pulse 1.8s ease-out infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(125, 206, 138, 0.55); }
-      70% { box-shadow: 0 0 0 9px rgba(125, 206, 138, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(125, 206, 138, 0); }
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
       gap: 16px;
-      margin-top: 20px;
+      flex-wrap: wrap;
     }
-
-    .panel {
+    h1 { font-size: 18px; font-weight: 600; margin: 0; }
+    .stamp { color: var(--muted); font-size: 13px; }
+    .subtitle { margin-top: 6px; color: var(--muted); font-size: 13px; }
+    .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    main {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 16px;
+      padding: 16px 24px 8px;
+    }
+    .docs-wrap { padding: 0 24px 16px; }
+    .docs-wrap section { width: 100%; }
+    @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+    section {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
+      border-radius: 12px;
+      padding: 16px 16px 8px;
     }
-
-    .panel.docs { margin-top: 16px; }
-
-    .panel h2 {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 0;
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--line);
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .panel.need h2 { color: var(--need); }
-    .panel.run h2 { color: var(--run); }
-    .panel.docs h2 { color: var(--doc); }
-
-    .count {
-      letter-spacing: 0;
-      text-transform: none;
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    .item {
-      padding: 13px 16px 14px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .item:last-child { border-bottom: 0; }
-
-    .row {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .chip {
-      flex: 0 0 auto;
-      margin-top: 1px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 700;
+    h2 {
+      margin: 0 0 12px;
+      font-size: 12px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      line-height: 1.5;
-    }
-
-    .chip-need { color: #1a1408; background: var(--need); }
-    .chip-run { color: #0b1528; background: var(--run); }
-    .chip-ok { color: #0f1d12; background: var(--ok); }
-    .chip-hold { color: #2a1212; background: var(--hold); }
-    .chip-doc { color: #1b1224; background: var(--doc); }
-
-    .body { min-width: 0; }
-
-    .title {
-      margin: 0;
-      font-weight: 600;
-    }
-
-    .note, .reply {
-      margin: 4px 0 0;
       color: var(--muted);
-      font-size: 13px;
     }
-
-    .reply { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
-
-    .doc-list { list-style: none; margin: 0; padding: 0; }
-
-    .doc-list li {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
+    .item { padding: 10px 0; border-top: 1px solid var(--line); }
+    .item:first-of-type { border-top: none; }
+    .who { font-weight: 600; }
+    .why { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .by { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 99px;
+      margin-right: 6px;
     }
-
-    .doc-list li:last-child { border-bottom: 0; }
-
-    footer {
-      margin-top: 22px;
-      color: var(--muted);
+    .need { background: #3a2d14; color: var(--need); }
+    .run { background: #17263a; color: var(--run); }
+    .ok { background: #17321c; color: var(--ok); }
+    .hold { background: #3a1f1f; color: var(--hold); }
+    .doc { background: #2a1f35; color: var(--doc); }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .path {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 12px;
-      line-height: 1.55;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    footer { padding: 0 24px 24px; color: var(--muted); font-size: 12px; }
+    .live-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ok); background: #17321c; padding: 3px 9px; border-radius: 99px;
+      margin-left: 10px; vertical-align: middle;
+    }
+    .live-pill .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
+      box-shadow: 0 0 0 0 rgba(125,206,138,0.7); animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(125,206,138,0.55); }
+      70% { box-shadow: 0 0 0 8px rgba(125,206,138,0); }
+      100% { box-shadow: 0 0 0 0 rgba(125,206,138,0); }
     }
 
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-      .top-inner { grid-template-columns: 1fr; }
-      .live { justify-self: start; }
-      h1 { font-size: 20px; }
-    }
   </style>
 </head>
 <body>
-    <header class="top">
-    <div class="top-inner">
-      <div>
-        <p class="kicker">Michael P. Welsh</p>
-        <h1>Command operations board</h1>
-        <p class="stamp">Sat 5 Sep 2026 · 10:10am ET · CoS</p>
-        <p class="sub">Michael + Kirsten · draft only · nothing here sends mail</p>
-      </div>
-      <span class="live" aria-label="Live"><span class="dot" aria-hidden="true"></span> Live</span>
-      <p class="hint">Auto-refreshes every 5 min after CoS updates. Bookmark this URL. Sealed/family litigation stays off this page.</p>
+  <header>
+    <div class="header-row">
+      <h1>Command <span class="live-pill"><span class="dot" aria-hidden="true"></span>Live</span></h1>
+      <div class="stamp">Mon 7 Sep 2026 · 10:46am ET · CoS</div>
     </div>
+    <div class="subtitle">Michael + Kirsten · draft only · nothing here sends mail</div>
+    <div class="hint">Public-safe board (no sealed). Local CoS copy may include sealed one-liners.</div>
   </header>
-
-  <main class="wrap">
-    <div class="grid">
-      <section class="panel need" aria-labelledby="needs-you">
-        <h2 id="needs-you">Needs you <span class="count">10</span></h2>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Send</span>
-            <div class="body">
-              <p class="title">YC Peng · 12-14 Leonard — unread Fri 11:36am timing reply + $1,500 engagement on first page.</p>
-              <p class="reply">Reply answer + engagement / hold.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Send</span>
-            <div class="body">
-              <p class="title">Christine Drive structure memo — Dual-home Live Listings + buyers shortcut.</p>
-              <p class="reply">Reply send / edit / hold.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Send</span>
-            <div class="body">
-              <p class="title">421 launch memo → Kirsten — Brokers Open LOCKED Thu 9/17 6–8pm ET; Labor Day = photo shoot U3+U4. Still draft.</p>
-              <p class="reply">Reply send / edit more / hold.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Post</span>
-            <div class="body">
-              <p class="title">Affiliate Capri Blue Volcano — paste-ready for @listwithkirsten (ASIN B000YBFJQU + FTC). You post.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Decide</span>
-            <div class="body">
-              <p class="title">attorneywelsh.com SEO — schema still Dalton &amp; Finegold leftover.</p>
-              <p class="reply">Reply identity / hygiene / hold.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Decide</span>
-            <div class="body">
-              <p class="title">Matt Bailey / 20 Manson — Sep 17 continuance hold.</p>
-              <p class="reply">Reply note Bailey / wait Igor / hold.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-hold">Waiting</span>
-            <div class="body">
-              <p class="title">Igor unsigned · HongRay retainer (signed letter + $1,000). No re-ask.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-hold">Hold</span>
-            <div class="body">
-              <p class="title">48 Boston→Chen · Alaska→Akiki · Lowell · Cottage · Adamson · 48 Garden fee. No re-ask.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Money</span>
-            <div class="body">
-              <p class="title">John · Walnut consulting invoice. Confirm before anyone sends.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-need">Decide</span>
-            <div class="body">
-              <p class="title">Asana Advanced vs team-of-four. Christine.</p>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section class="panel run" aria-labelledby="bots-working">
-        <h2 id="bots-working">Bots working <span class="count">6</span></h2>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-run">Live</span>
-            <div class="body">
-              <p class="title">Paper BTC 5-min — paper only, no wallet. Skip filters on main.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-run">Live</span>
-            <div class="body">
-              <p class="title">Markets · Alcaraz HOLD after Wu win. Next kill Paul R16 6–8 Sep. Kristersson parked.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-run">Live</span>
-            <div class="body">
-              <p class="title">Research 24h improve through ~11:54pm ET — unlocked 48 Boston SAT-P1-C1.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-ok">Done AM</span>
-            <div class="body">
-              <p class="title">Law / Seller memo / Originator / STR Phoenix CAUTION / Buyers / Deals / Markets / Affiliate — seller memo sent; Brokers Open locked 9/17.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-run">Next</span>
-            <div class="body">
-              <p class="title">Evening seller research 7:30pm Pinergy · STR midday/evening (next metro San Diego).</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="item">
-          <div class="row">
-            <span class="chip chip-hold">Blocked</span>
-            <div class="body">
-              <p class="title">Affiliate X scan blocked · Finance desk last failed 9/3 (weekend quiet).</p>
-            </div>
-          </div>
-        </article>
-      </section>
-    </div>
-
-    <section class="panel docs" aria-labelledby="docs">
-      <h2 id="docs">Documents produced</h2>
-      <ul class="doc-list">
-        <li>
-          <span class="chip chip-doc">Drive</span>
-          <div class="body">
-            <p class="title"><a href="https://docs.google.com/document/d/1tF3zfv-LUYIw1E_OYdyhI6y3uRmYO38yibf3fz7PuPg/edit" rel="noopener noreferrer" target="_blank">421 E 6th Launch Strategy Memo (Kirsten)</a></p>
-          </div>
-        </li>
-        <li>
-          <span class="chip chip-doc">Drive</span>
-          <div class="body">
-            <p class="title"><a href="https://docs.google.com/document/d/1Ehu-tYmBRsuN63X1JQwuqSTGno0eGTJgZor8CLidJ4I/edit" rel="noopener noreferrer" target="_blank">Christine · KM Drive structure memo</a></p>
-          </div>
-        </li>
-        <li>
-          <span class="chip chip-doc">Drive</span>
-          <div class="body">
-            <p class="title"><a href="https://drive.google.com/drive/folders/1W2p7BWcwJxLzeVYiIpnLUpzv34E8cGYZ" rel="noopener noreferrer" target="_blank">Command Board folder</a></p>
-          </div>
-        </li>
-        <li>
-          <span class="chip chip-doc">Drive</span>
-          <div class="body">
-            <p class="title"><a href="https://docs.google.com/spreadsheets/d/1rtIpEjkdJYAPdHuy6nfNwhZVoLVSHBfmayLwAWDl1ZM/edit" rel="noopener noreferrer" target="_blank">KM seller-opportunity sheet</a> (48 Boston row 35)</p>
-          </div>
-        </li>
-        <li>
-          <span class="chip chip-doc">Local</span>
-          <div class="body">
-            <p class="title">48 Boston → Chen Originator draft (HOLD) — on CoS computer</p>
-          </div>
-        </li>
-        <li>
-          <span class="chip chip-doc">Local</span>
-          <div class="body">
-            <p class="title">STR Phoenix CAUTION memo — on CoS computer</p>
-          </div>
-        </li>
-        <li>
-          <span class="chip chip-doc">Local</span>
-          <div class="body">
-            <p class="title">Markets Alcaraz + paper log (5 Sep) — on CoS computer</p>
-          </div>
-        </li>
-        <li>
-          <span class="chip chip-doc">Local</span>
-          <div class="body">
-            <p class="title">attorneywelsh SEO pack · KM Drive audit — on CoS computer</p>
-          </div>
-        </li>
-      </ul>
+  <main>
+    <section>
+      <h2>Needs you</h2>
+      <div class="item">
+        <span class="tag hold">Hold</span>
+        <span class="who">Originator · Webster + Tremont → Akiki</span>
+        <div class="why">HOLD — you skipped send Sun. To: elias@akikiauto.com. Do not re-ask until you reopen.</div>
+      </div>      <div class="item">
+        <span class="tag hold">Hold</span>
+        <span class="who">48 Boston → Chen · Lowell $2,500 memo</span>
+        <div class="why">48 Boston HOLD (Chen To: missing; auction Fri 10/2). Lowell HOLD clock Fri 9/11 10am — no chase before then.</div>
+      </div>      <div class="item">
+        <span class="tag hold">Waiting</span>
+        <span class="who">Practice · Igor chase sent · Tavares · HongRay · Jingxu He · YC Peng</span>
+        <div class="why">Igor engagement chase SENT today — quiet until reply or Wed 9/10 kill/wait. Tavares $500 retainer out. HongRay $1k still out. 48 Garden fee waiting Jingxu He. YC Peng engagement already sent — ball signed letter + money.</div>
+      </div>      <div class="item">
+        <span class="tag hold">Hold</span>
+        <span class="who">DiBacco / Bethany drafts</span>
+        <div class="why">Drafts HOLD (skipped send Sat). Fri Sep 11 3pm DiBacco sit-down is on Practice Calendar.</div>
+      </div>      <div class="item">
+        <span class="tag need">Post</span>
+        <span class="who">Affiliate · Sol de Janeiro Cheirosa 48 draft</span>
+        <div class="why">Paste-ready for @listwithkirsten (ASIN B0F8XHHRWG, tag kirstenmcelen-20 + FTC). You post; Affiliate does not send.</div>
+      </div>      <div class="item">
+        <span class="tag need">Decide</span>
+        <span class="who">Ops · Asana Advanced</span>
+        <div class="why">Upgrade vs team-of-four. Needs Decision with Christine (same card already flagged Fri 9/4 — no re-nag).</div>
+      </div>      <div class="item">
+        <span class="tag hold">Waiting</span>
+        <span class="who">Ops · QuickBooks / tax docs · DocuSign · Walnut invoice</span>
+        <div class="why">QB categorize + Stephanie year-end with Kirsten. DocuSign Form Packets still open. John Walnut consulting invoice HOLD until you okay send.</div>
+      </div>      <div class="item">
+        <span class="tag need">Decide</span>
+        <span class="who">SEO · 421e6th GSC (optional)</span>
+        <div class="why">Optional: request indexing /projects + /services. Apex-primary still parked (www loop fixed).</div>
+      </div>      <div class="item">
+        <span class="tag hold">Hold</span>
+        <span class="who">Markets · live tickets</span>
+        <div class="why">Alcaraz HOLD (mid 56.5¢; next hard kill Shelton QF Tue/Wed). Sabalenka / Seahawks / Chargers HOLD. No LIVE KILL. Desk quiet on new ideas.</div>
+      </div>
     </section>
-
-    <footer>
-      Bookmark <a href="https://mwelsh84.github.io/km-command-board/">https://mwelsh84.github.io/km-command-board/</a>
-      · CoS refreshes after morning desks · nothing sends mail · sealed stays off this page.
-    </footer>
+    <section>
+      <h2>Bots working</h2>
+      <div class="item">
+        <span class="tag ok">Done AM</span>
+        <span class="who">Seller · Law · Sealed · Deals · Buyers · Markets · Originator · STR Denver · Quality · Affiliate · Ops</span>
+        <div class="why">Seller memo quiet (0 new P1s). Sealed quiet. Deals: 421 Brokers Open locked Thu 9/17 6–8pm; blast card still open Christine. CAPTCHA queue #1–8 DONE today. Quality: clocks healthy; one propose-only handoff-packet retune.</div>
+      </div>      <div class="item">
+        <span class="tag run">Live</span>
+        <span class="who">Paper BTC 5-min</span>
+        <div class="why">Alive. Equity ~$1,043 paper; realized +$43 paper. No wallet. Entries today 0.</div>
+      </div>      <div class="item">
+        <span class="tag run">Next</span>
+        <span class="who">Finance 11am · settle-only 11:30 · STR midday 1pm · afternoon mail/marketing · seller research 7:30pm</span>
+        <div class="why">Affiliate weekly pack first fire ~11am. Desk idle-improve first fire 11:45.</div>
+      </div>      <div class="item">
+        <span class="tag hold">Blocked</span>
+        <span class="who">Finance QBO on this computer</span>
+        <div class="why">Intuit Access denied for kirsten@km-regroup.com. Finance stays off QBO from this machine.</div>
+      </div>
+    </section>
   </main>
+  <div class="docs-wrap">
+    <section>
+      <h2>Documents produced</h2>
+      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">421 E 6th Launch Strategy Memo (Kirsten)</span>
+        <div class="by">KM Deals / CoS</div>
+        <div class="why">Strategy memo; Brokers Open locked Thu 9/17; still DRAFT for send.</div>
+        <div class="why"><a href="https://docs.google.com/document/d/1tF3zfv-LUYIw1E_OYdyhI6y3uRmYO38yibf3fz7PuPg/edit" target="_blank" rel="noopener">Open in Drive</a></div>
+      </div>      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">Christine · KM Drive structure memo</span>
+        <div class="by">CoS</div>
+        <div class="why">Dual-home Live Listings + buyers shortcut. Draft — do not send until Michael says send.</div>
+        <div class="why"><a href="https://docs.google.com/document/d/1Ehu-tYmBRsuN63X1JQwuqSTGno0eGTJgZor8CLidJ4I/edit" target="_blank" rel="noopener">Open in Drive</a></div>
+      </div>      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">Leo Akiki auction memo (draft)</span>
+        <div class="by">Buyers / CoS</div>
+        <div class="why">Alaska / Ogden / Cottage — draft only until send Akiki.</div>
+        <div class="why"><a href="https://docs.google.com/document/d/1wCmOCULnE-MbhAX-le5fr_FE77wMV8yQao2bcqU8xKk/edit" target="_blank" rel="noopener">Open in Drive</a></div>
+      </div>      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">Command Board folder (Shared Drive)</span>
+        <div class="by">CoS</div>
+        <div class="why">Kirsten + Michael home under 00_START HERE.</div>
+        <div class="why"><a href="https://drive.google.com/drive/folders/1W2p7BWcwJxLzeVYiIpnLUpzv34E8cGYZ" target="_blank" rel="noopener">Open folder</a></div>
+      </div>      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">KM seller-opportunity sheet</span>
+        <div class="by">KM Research</div>
+        <div class="why">Webster + Tremont P1s live; Sun eve cycle 0 new P1s; named SOS/registry pulls closed Mon.</div>
+        <div class="why"><a href="https://docs.google.com/spreadsheets/d/1rtIpEjkdJYAPdHuy6nfNwhZVoLVSHBfmayLwAWDl1ZM/edit" target="_blank" rel="noopener">Open sheet</a></div>
+      </div>      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">Markets · Alcaraz + Polymarket scan (7 Sep)</span>
+        <div class="by">Markets</div>
+        <div class="why">HOLD tickets + quiet new-ideas pass. Paper only. On CoS computer (local).</div>
+      </div>      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">STR Denver memo</span>
+        <div class="by">STR desk</div>
+        <div class="why">CAUTION — primary-residence license only. On CoS computer (local).</div>
+      </div>      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">Monday Prix shoot pack</span>
+        <div class="by">Marketing / CoS</div>
+        <div class="why">TikTok-style short verticals week of Sep 7. Draft only. On CoS computer (local).</div>
+      </div>
+    </section>
+  </div>
+  <footer>Public KM copy for Michael + Kirsten. CoS refreshes ~10am ET daily. Nothing on this page sends mail. No sealed/family litigation.</footer>
 </body>
 </html>
