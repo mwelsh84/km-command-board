@@ -1,0 +1,13 @@
+{
+  "name": "km-command-board",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "mint": "node scripts/mint-decide-url.mjs",
+    "dev": "node scripts/dev-server.mjs"
+  }
+}
