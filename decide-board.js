@@ -67,7 +67,10 @@
         return;
       }
       btn.disabled = true;
-      btn.title = "CoS: set data-task-gid and mint data-sig-" + action + " (npm run mint)";
+      btn.title =
+        action === "other"
+          ? "CoS: set data-asana-url (or mint data-sig-other)"
+          : "CoS: set data-task-gid and mint data-sig-" + action + " (npm run mint)";
     });
   }
 

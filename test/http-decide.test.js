@@ -37,6 +37,30 @@ describe("processDecide", () => {
       { APPROVAL_SECRET: secret }
     );
     assert.equal(noPat.status, 503);
+
+    const mockPat = await processDecide(
+      { taskGid: gid, action: "approve", sig: sign(gid, "approve", secret) },
+      { APPROVAL_SECRET: secret },
+      {
+        fetchImpl: async (url, opts = {}) => {
+          if (String(url).includes("/stories") || (opts.method || "GET") === "PUT") {
+            return { ok: true, json: async () => ({ data: {} }) };
+          }
+          return {
+            ok: true,
+            json: async () => ({
+              data: {
+                completed: false,
+                resource_subtype: "default_task",
+                permalink_url: "https://app.asana.com/0/0/" + gid + "/f",
+              },
+            }),
+          };
+        },
+      }
+    );
+    assert.equal(mockPat.status, 200);
+    assert.equal(mockPat.json.ok, true);
   });
 
   it("other can return a constructed permalink without Asana if PAT is missing", async () => {

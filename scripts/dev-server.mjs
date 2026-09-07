@@ -9,6 +9,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
+import { asanaToken } from "../lib/asana-decide.js";
 import { parseDecideInput, processDecide, resultHtml, corsOrigin } from "../lib/http-decide.js";
 
 const root = join(fileURLToPath(new URL("..", import.meta.url)));
@@ -77,8 +78,12 @@ const server = createServer(async (req, res) => {
       send(res, 400, { "Content-Type": "application/json" }, JSON.stringify({ ok: false, error: err.message }));
       return;
     }
-    const deps = process.env.MOCK_ASANA === "1" ? { fetchImpl: mockFetch } : {};
-    const out = await processDecide(input, process.env, deps);
+    const mock = process.env.MOCK_ASANA === "1";
+    const env = mock && !asanaToken(process.env)
+      ? { ...process.env, ASANA_PAT: "mock" }
+      : process.env;
+    const deps = mock ? { fetchImpl: mockFetch } : {};
+    const out = await processDecide(input, env, deps);
     const accept = String(req.headers.accept || "");
     const html = req.method === "GET" && !accept.includes("application/json");
     if (html) {
