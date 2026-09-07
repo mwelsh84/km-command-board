@@ -6,6 +6,8 @@
   <title>Command · Live</title>
   <meta http-equiv="refresh" content="300" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
+  <!-- Same-origin on Vercel. On GitHub Pages, set this to https://YOUR-PROJECT.vercel.app/api/decide -->
+  <meta name="km-decide-api" content="/api/decide" />
   <style>
     :root {
       --bg: #111114; --card: #1c1c21; --line: #2c2c34; --text: #f2f1ec; --muted: #9a988e;
@@ -51,6 +53,20 @@
     a:hover { text-decoration: underline; }
     .path { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
     footer { padding: 0 24px 24px; color: var(--muted); font-size: 12px; }
+    .decide-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .decide-actions button {
+      font: inherit; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+      border-radius: 8px; padding: 6px 11px; cursor: pointer; border: 1px solid var(--line);
+      background: #151518; color: var(--text);
+    }
+    .decide-actions button:hover:not(:disabled) { filter: brightness(1.12); }
+    .decide-actions button:disabled { opacity: 0.42; cursor: not-allowed; }
+    .decide-actions .approve { background: #17321c; color: var(--ok); border-color: #2a4a32; }
+    .decide-actions .decline { background: #3a1f1f; color: var(--hold); border-color: #4a2a2a; }
+    .decide-actions .other { background: #17263a; color: var(--run); border-color: #24364a; }
+    .decide-status { font-size: 12px; margin-top: 6px; color: var(--ok); }
+    .decide-status.err { color: var(--hold); }
+    .item.decided .decide-actions { opacity: 0.55; }
     .live-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ok); background: #17321c; padding: 3px 9px; border-radius: 99px; margin-left: 10px; vertical-align: middle; }
     .live-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(125,206,138,0.7); animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(125,206,138,0.55); } 70% { box-shadow: 0 0 0 8px rgba(125,206,138,0); } 100% { box-shadow: 0 0 0 0 rgba(125,206,138,0); } }
@@ -63,33 +79,34 @@
       <div class="stamp">Mon 7 Sep 2026 · 2:42pm ET · CoS</div>
     </div>
     <div class="subtitle">Michael + Kirsten · draft only · nothing here sends mail</div>
-    <div class="hint">Decide is open; Waiting / Hold collapsed by default. Each card shows as-of. Public: <a href="https://mwelsh84.github.io/km-command-board/">mwelsh84.github.io/km-command-board</a> (no sealed).</div>
+    <div class="hint">Decide is open; Waiting / Hold collapsed by default. Approve / Decline write to Asana (HMAC). Other opens the task. Public: <a href="https://mwelsh84.github.io/km-command-board/">mwelsh84.github.io/km-command-board</a> (no sealed).</div>
   </header>
   <main>
     <section>
       <h2>Needs you</h2>
 
       <h3>Decide</h3>
+      <!-- CoS: keep data-task-gid + data-asana-url. After APPROVAL_SECRET is set, npm run mint <gid> and paste data-sig-*. -->
       <div class="bucket">
-        <div class="item">
+        <div class="item" data-task-gid="1218244286398772" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244286398772" data-sig-approve="" data-sig-decline="" data-sig-other="">
           <span class="tag need">Decide</span>
           <span class="who">Ops · Asana Advanced</span>
           <div class="why">Upgrade vs team-of-four. Approve, deny, or delegate to Christine.</div>
           <div class="asof">as of Mon 9/7 morning scorecard · still open</div>
         </div>
-        <div class="item">
+        <div class="item" data-task-gid="1218244215193427" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244215193427" data-sig-approve="" data-sig-decline="" data-sig-other="">
           <span class="tag need">Decide</span>
           <span class="who">Finance · Stephanie 2025 company packet</span>
           <div class="why">Past due. One decide with Kirsten: send or kill (no nag).</div>
           <div class="asof">as of Mon 9/7 bot-block pack</div>
         </div>
-        <div class="item">
+        <div class="item" data-task-gid="" data-asana-url="" data-sig-approve="" data-sig-decline="" data-sig-other="">
           <span class="tag need">Decide</span>
           <span class="who">Finance · QBO kirsten@ Access denied</span>
           <div class="why">Intuit unblock (no password ask) or keep categorizing from your laptop + cheat sheet.</div>
           <div class="asof">as of Sun Ops KEEP · Missing if cleared since</div>
         </div>
-        <div class="item">
+        <div class="item" data-task-gid="1218244183839107" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244183839107" data-sig-approve="" data-sig-decline="" data-sig-other="">
           <span class="tag need">Decide</span>
           <span class="who">Money · John Walnut consulting invoice</span>
           <div class="why">HOLD until you okay send (Christine/Kirsten hours).</div>
@@ -260,6 +277,7 @@
       </div>
     </section>
   </div>
-  <footer>Opens on CoS computer and via Shared Drive / GitHub Pages for Kirsten. CoS refreshes after morning desks and when you ask. Nothing on this page sends mail. Sealed facts stay one line (CoS copy only).</footer>
+  <footer>Opens on CoS computer and via Shared Drive / GitHub Pages for Kirsten. CoS refreshes after morning desks and when you ask. Approve / Decline comment + complete the Asana Decide task. Nothing on this page sends mail. Sealed facts stay one line (CoS copy only).</footer>
+  <script src="decide-board.js"></script>
 </body>
 </html>
