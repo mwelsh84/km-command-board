@@ -8,177 +8,201 @@
   <meta name="robots" content="noindex, nofollow, noarchive" />
   <style>
     :root {
-      --bg: #111114;
-      --card: #1c1c21;
-      --line: #2c2c34;
-      --text: #f2f1ec;
-      --muted: #9a988e;
-      --need: #e8a23a;
-      --run: #6ea8ff;
-      --ok: #7dce8a;
-      --hold: #c07a7a;
-      --doc: #b89ad4;
-      --link: #8eb4ff;
+      --bg: #111114; --card: #1c1c21; --line: #2c2c34; --text: #f2f1ec; --muted: #9a988e;
+      --need: #e8a23a; --run: #6ea8ff; --ok: #7dce8a; --hold: #c07a7a; --wait: #c4b07a;
+      --doc: #b89ad4; --link: #8eb4ff;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    header {
-      padding: 20px 24px 14px;
-      border-bottom: 1px solid var(--line);
-      position: sticky; top: 0; background: rgba(17,17,20,0.92); backdrop-filter: blur(8px); z-index: 10;
-    }
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
+    body { margin: 0; font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+    header { padding: 20px 24px 14px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(17,17,20,0.92); backdrop-filter: blur(8px); z-index: 10; }
+    .header-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
     h1 { font-size: 18px; font-weight: 600; margin: 0; }
     .stamp { color: var(--muted); font-size: 13px; }
     .subtitle { margin-top: 6px; color: var(--muted); font-size: 13px; }
     .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    main {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 16px;
-      padding: 16px 24px 8px;
-    }
+    main { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; padding: 16px 24px 8px; }
     .docs-wrap { padding: 0 24px 16px; }
     .docs-wrap section { width: 100%; }
     @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
-    section {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px 16px 8px;
-    }
-    h2 {
-      margin: 0 0 12px;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+    section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 8px; }
+    h2 { margin: 0 0 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    h3 { margin: 14px 0 6px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    h3:first-of-type { margin-top: 0; }
+    details.hold-group { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 8px; }
+    details.hold-group > summary { cursor: pointer; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; list-style: none; }
+    details.hold-group > summary::-webkit-details-marker { display: none; }
+    details.hold-group > summary::before { content: "▸ "; }
+    details.hold-group[open] > summary::before { content: "▾ "; }
     .item { padding: 10px 0; border-top: 1px solid var(--line); }
     .item:first-of-type { border-top: none; }
+    .bucket .item:first-of-type { border-top: 1px solid var(--line); }
     .who { font-weight: 600; }
     .why { color: var(--muted); font-size: 13px; margin-top: 2px; }
     .by { color: var(--muted); font-size: 12px; margin-top: 2px; }
-    .tag {
-      display: inline-block;
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 99px;
-      margin-right: 6px;
-    }
+    .asof { color: var(--muted); font-size: 11px; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .tag { display: inline-block; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; margin-right: 6px; }
     .need { background: #3a2d14; color: var(--need); }
     .run { background: #17263a; color: var(--run); }
     .ok { background: #17321c; color: var(--ok); }
     .hold { background: #3a1f1f; color: var(--hold); }
+    .wait { background: #2f2a18; color: var(--wait); }
     .doc { background: #2a1f35; color: var(--doc); }
     a { color: var(--link); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    .path {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12px;
-      color: var(--muted);
-      word-break: break-all;
-    }
+    .path { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
     footer { padding: 0 24px 24px; color: var(--muted); font-size: 12px; }
-    .live-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--ok); background: #17321c; padding: 3px 9px; border-radius: 99px;
-      margin-left: 10px; vertical-align: middle;
-    }
-    .live-pill .dot {
-      width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
-      box-shadow: 0 0 0 0 rgba(125,206,138,0.7); animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(125,206,138,0.55); }
-      70% { box-shadow: 0 0 0 8px rgba(125,206,138,0); }
-      100% { box-shadow: 0 0 0 0 rgba(125,206,138,0); }
-    }
-
+    .live-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ok); background: #17321c; padding: 3px 9px; border-radius: 99px; margin-left: 10px; vertical-align: middle; }
+    .live-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(125,206,138,0.7); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(125,206,138,0.55); } 70% { box-shadow: 0 0 0 8px rgba(125,206,138,0); } 100% { box-shadow: 0 0 0 0 rgba(125,206,138,0); } }
   </style>
 </head>
 <body>
   <header>
     <div class="header-row">
       <h1>Command <span class="live-pill"><span class="dot" aria-hidden="true"></span>Live</span></h1>
-      <div class="stamp">Mon 7 Sep 2026 · 10:46am ET · CoS</div>
+      <div class="stamp">Mon 7 Sep 2026 · 2:42pm ET · CoS</div>
     </div>
     <div class="subtitle">Michael + Kirsten · draft only · nothing here sends mail</div>
-    <div class="hint">Public-safe board (no sealed). Local CoS copy may include sealed one-liners.</div>
+    <div class="hint">Decide is open; Waiting / Hold collapsed by default. Each card shows as-of. Public: <a href="https://mwelsh84.github.io/km-command-board/">mwelsh84.github.io/km-command-board</a> (no sealed).</div>
   </header>
   <main>
     <section>
       <h2>Needs you</h2>
-      <div class="item">
-        <span class="tag hold">Hold</span>
-        <span class="who">Originator · Webster + Tremont → Akiki</span>
-        <div class="why">HOLD — you skipped send Sun. To: elias@akikiauto.com. Do not re-ask until you reopen.</div>
-      </div>      <div class="item">
-        <span class="tag hold">Hold</span>
-        <span class="who">48 Boston → Chen · Lowell $2,500 memo</span>
-        <div class="why">48 Boston HOLD (Chen To: missing; auction Fri 10/2). Lowell HOLD clock Fri 9/11 10am — no chase before then.</div>
-      </div>      <div class="item">
-        <span class="tag hold">Waiting</span>
-        <span class="who">Practice · Igor chase sent · Tavares · HongRay · Jingxu He · YC Peng</span>
-        <div class="why">Igor engagement chase SENT today — quiet until reply or Wed 9/10 kill/wait. Tavares $500 retainer out. HongRay $1k still out. 48 Garden fee waiting Jingxu He. YC Peng engagement already sent — ball signed letter + money.</div>
-      </div>      <div class="item">
-        <span class="tag hold">Hold</span>
-        <span class="who">DiBacco / Bethany drafts</span>
-        <div class="why">Drafts HOLD (skipped send Sat). Fri Sep 11 3pm DiBacco sit-down is on Practice Calendar.</div>
-      </div>      <div class="item">
-        <span class="tag need">Post</span>
-        <span class="who">Affiliate · Sol de Janeiro Cheirosa 48 draft</span>
-        <div class="why">Paste-ready for @listwithkirsten (ASIN B0F8XHHRWG, tag kirstenmcelen-20 + FTC). You post; Affiliate does not send.</div>
-      </div>      <div class="item">
-        <span class="tag need">Decide</span>
-        <span class="who">Ops · Asana Advanced</span>
-        <div class="why">Upgrade vs team-of-four. Needs Decision with Christine (same card already flagged Fri 9/4 — no re-nag).</div>
-      </div>      <div class="item">
-        <span class="tag hold">Waiting</span>
-        <span class="who">Ops · QuickBooks / tax docs · DocuSign · Walnut invoice</span>
-        <div class="why">QB categorize + Stephanie year-end with Kirsten. DocuSign Form Packets still open. John Walnut consulting invoice HOLD until you okay send.</div>
-      </div>      <div class="item">
-        <span class="tag need">Decide</span>
-        <span class="who">SEO · 421e6th GSC (optional)</span>
-        <div class="why">Optional: request indexing /projects + /services. Apex-primary still parked (www loop fixed).</div>
-      </div>      <div class="item">
-        <span class="tag hold">Hold</span>
-        <span class="who">Markets · live tickets</span>
-        <div class="why">Alcaraz HOLD (mid 56.5¢; next hard kill Shelton QF Tue/Wed). Sabalenka / Seahawks / Chargers HOLD. No LIVE KILL. Desk quiet on new ideas.</div>
+
+      <h3>Decide</h3>
+      <div class="bucket">
+        <div class="item">
+          <span class="tag need">Decide</span>
+          <span class="who">Ops · Asana Advanced</span>
+          <div class="why">Upgrade vs team-of-four. Approve, deny, or delegate to Christine.</div>
+          <div class="asof">as of Mon 9/7 morning scorecard · still open</div>
+        </div>
+        <div class="item">
+          <span class="tag need">Decide</span>
+          <span class="who">Finance · Stephanie 2025 company packet</span>
+          <div class="why">Past due. One decide with Kirsten: send or kill (no nag).</div>
+          <div class="asof">as of Mon 9/7 bot-block pack</div>
+        </div>
+        <div class="item">
+          <span class="tag need">Decide</span>
+          <span class="who">Finance · QBO kirsten@ Access denied</span>
+          <div class="why">Intuit unblock (no password ask) or keep categorizing from your laptop + cheat sheet.</div>
+          <div class="asof">as of Sun Ops KEEP · Missing if cleared since</div>
+        </div>
+        <div class="item">
+          <span class="tag need">Decide</span>
+          <span class="who">Money · John Walnut consulting invoice</span>
+          <div class="why">HOLD until you okay send (Christine/Kirsten hours).</div>
+          <div class="asof">as of Mon 9/7 ops desk</div>
+        </div>
+        <div class="item">
+          <span class="tag need">Post</span>
+          <span class="who">Affiliate · paste-ready drafts</span>
+          <div class="why">Cheirosa 48 + Mon weekly pack in Affiliate chat. You post; desk does not.</div>
+          <div class="asof">as of Mon 9/7 ~11:30am ET</div>
+        </div>
+        <div class="item">
+          <span class="tag need">Optional</span>
+          <span class="who">SEO · GSC indexing</span>
+          <div class="why">Optional: request indexing /projects + /services; apex sitemap preferred. Domains apex already DONE.</div>
+          <div class="asof">as of Mon 9/7 ~1:25pm Domains closed</div>
+        </div>
       </div>
+
+      <h3>Waiting</h3>
+      <div class="bucket">
+        <div class="item">
+          <span class="tag wait">Waiting</span>
+          <span class="who">Practice · Igor / Peng / HongRay / Tavares / 48 Garden</span>
+          <div class="why">Igor chase SENT — quiet until reply or Wed 9/10 kill. Peng ball signed letter + money. Others waiting on them.</div>
+          <div class="asof">as of Mon 9/7 morning</div>
+        </div>
+        <div class="item">
+          <span class="tag wait">Waiting</span>
+          <span class="who">Buyers · Erin (Needs Kirsten)</span>
+          <div class="why">Forward Fulton package + lock Atlantic vs dig. Not Michael unless you escalate.</div>
+          <div class="asof">as of Mon 9/7 9:50am Buyers</div>
+        </div>
+        <div class="item">
+          <span class="tag wait">Waiting</span>
+          <span class="who">Ops · DocuSign Form Packets</span>
+          <div class="why">Kirsten/Christine path. Fresh status Missing until Ops confirms.</div>
+          <div class="asof">as of Mon 9/7 Ops Missing</div>
+        </div>
+        <div class="item">
+          <span class="tag wait">Waiting</span>
+          <span class="who">Drive · Christine structure memo</span>
+          <div class="why">Detailed tree memo drafted in CoS chat — send when you write send.</div>
+          <div class="asof">as of Mon 9/7 ~2:08pm draft</div>
+        </div>
+      </div>
+
+      <details class="hold-group">
+        <summary>Hold (collapsed) · intentional / do not re-ask</summary>
+        <div class="item">
+          <span class="tag hold">Hold</span>
+          <span class="who">Originator · HOLD ALL</span>
+          <div class="why">No outbound. Lowell Fri 9/11 10am attend-only if you reopen. Chen To: still Missing.</div>
+          <div class="asof">as of Mon 9/7 ~12:34pm</div>
+        </div>
+        <div class="item">
+          <span class="tag hold">Hold</span>
+          <span class="who">Markets · live tickets</span>
+          <div class="why">Alcaraz / Sabalenka / Seahawks / Chargers HOLD. No LIVE KILL.</div>
+          <div class="asof">as of Mon 9/7 markets note</div>
+        </div>
+        <div class="item">
+          <span class="tag hold">Hold</span>
+          <span class="who">Practice · Manson strategy / DiBacco drafts</span>
+          <div class="why">Manson HOLD until you ask. DiBacco sit-down Fri 9/11 3pm on calendar; drafts hold.</div>
+          <div class="asof">as of Mon 9/7</div>
+        </div>
+      </details>
     </section>
+
     <section>
       <h2>Bots working</h2>
       <div class="item">
-        <span class="tag ok">Done AM</span>
-        <span class="who">Seller · Law · Sealed · Deals · Buyers · Markets · Originator · STR Denver · Quality · Affiliate · Ops</span>
-        <div class="why">Seller memo quiet (0 new P1s). Sealed quiet. Deals: 421 Brokers Open locked Thu 9/17 6–8pm; blast card still open Christine. CAPTCHA queue #1–8 DONE today. Quality: clocks healthy; one propose-only handoff-packet retune.</div>
-      </div>      <div class="item">
+        <span class="tag ok">Done</span>
+        <span class="who">SEO · Domains apex + /guides</span>
+        <div class="why">Apex primary live; www→apex. Guides live: /guides, Winter Hill, Telegraph Hill.</div>
+        <div class="asof">as of Mon 9/7 ~1:25pm Domains · ~2:40pm guides</div>
+      </div>
+      <div class="item">
+        <span class="tag ok">Done</span>
+        <span class="who">Deals · Brokers Open blast</span>
+        <div class="why">Sent last Friday. Christine answering weekend leads. Zero Deals Michael blockers today.</div>
+        <div class="asof">as of Mon 9/7 ~10am Christine Chat</div>
+      </div>
+      <div class="item">
+        <span class="tag ok">Done</span>
+        <span class="who">Research · CAPTCHA queue</span>
+        <div class="why">Queue #1–8 closed. Originator pursue sister sheet live.</div>
+        <div class="asof">as of Mon 9/7 midday</div>
+      </div>
+      <div class="item">
         <span class="tag run">Live</span>
         <span class="who">Paper BTC 5-min</span>
-        <div class="why">Alive. Equity ~$1,043 paper; realized +$43 paper. No wallet. Entries today 0.</div>
-      </div>      <div class="item">
-        <span class="tag run">Next</span>
-        <span class="who">Finance 11am · settle-only 11:30 · STR midday 1pm · afternoon mail/marketing · seller research 7:30pm</span>
-        <div class="why">Affiliate weekly pack first fire ~11am. Desk idle-improve first fire 11:45.</div>
-      </div>      <div class="item">
+        <div class="why">Alive. Equity ~$1,032.76 paper · 8 entries · 6–2 · 75% WR. Paper only.</div>
+        <div class="asof">as of Mon 9/7 ~2:33pm ET</div>
+      </div>
+      <div class="item">
+        <span class="tag run">Live</span>
+        <span class="who">STR Markets accel</span>
+        <div class="why">CLEAR Phoenix/Houston/Austin; HARD NO NYC; pausing after board reconfirm unless continue.</div>
+        <div class="asof">as of Mon 9/7 ~2:39pm</div>
+      </div>
+      <div class="item">
+        <span class="tag ok">Done</span>
+        <span class="who">Marketing · Social Master Templates</span>
+        <div class="why">Canva folder FAHUiCSyOho · 6 MASTER + guide. Draft only.</div>
+        <div class="asof">as of Mon 9/7 ~12:52pm</div>
+      </div>
+      <div class="item">
         <span class="tag hold">Blocked</span>
-        <span class="who">Finance QBO on this computer</span>
-        <div class="why">Intuit Access denied for kirsten@km-regroup.com. Finance stays off QBO from this machine.</div>
+        <span class="who">Finance QBO on CoS computer</span>
+        <div class="why">Access denied for kirsten@. Use laptop path.</div>
+        <div class="asof">as of Sun–Mon</div>
       </div>
     </section>
   </main>
@@ -187,52 +211,55 @@
       <h2>Documents produced</h2>
       <div class="item">
         <span class="tag doc">Doc</span>
-        <span class="who">421 E 6th Launch Strategy Memo (Kirsten)</span>
-        <div class="by">KM Deals / CoS</div>
-        <div class="why">Strategy memo; Brokers Open locked Thu 9/17; still DRAFT for send.</div>
-        <div class="why"><a href="https://docs.google.com/document/d/1tF3zfv-LUYIw1E_OYdyhI6y3uRmYO38yibf3fz7PuPg/edit" target="_blank" rel="noopener">Open in Drive</a></div>
-      </div>      <div class="item">
-        <span class="tag doc">Doc</span>
-        <span class="who">Christine · KM Drive structure memo</span>
+        <span class="who">Christine · KM Drive structure memo (tree draft)</span>
         <div class="by">CoS</div>
-        <div class="why">Dual-home Live Listings + buyers shortcut. Draft — do not send until Michael says send.</div>
-        <div class="why"><a href="https://docs.google.com/document/d/1Ehu-tYmBRsuN63X1JQwuqSTGno0eGTJgZor8CLidJ4I/edit" target="_blank" rel="noopener">Open in Drive</a></div>
-      </div>      <div class="item">
+        <div class="why">Full target tree + steps. Draft in chat /workspace — send when Michael says send.</div>
+        <div class="why">on CoS computer · <span class="path">/workspace/km-drive-audit/MEMO-Christine-Drive-Structure-2026-09-07-TREE.md</span></div>
+        <div class="asof">as of Mon 9/7 ~2:08pm</div>
+      </div>
+      <div class="item">
         <span class="tag doc">Doc</span>
-        <span class="who">Leo Akiki auction memo (draft)</span>
-        <div class="by">Buyers / CoS</div>
-        <div class="why">Alaska / Ogden / Cottage — draft only until send Akiki.</div>
-        <div class="why"><a href="https://docs.google.com/document/d/1wCmOCULnE-MbhAX-le5fr_FE77wMV8yQao2bcqU8xKk/edit" target="_blank" rel="noopener">Open in Drive</a></div>
-      </div>      <div class="item">
+        <span class="who">KM Social Master Templates (Canva)</span>
+        <div class="by">KM Marketing</div>
+        <div class="why">6 MASTER slots + usage guide.</div>
+        <div class="why"><a href="https://www.canva.com/folder/FAHUiCSyOho" target="_blank" rel="noopener">Open Canva folder</a></div>
+        <div class="asof">as of Mon 9/7</div>
+      </div>
+      <div class="item">
         <span class="tag doc">Doc</span>
-        <span class="who">Command Board folder (Shared Drive)</span>
-        <div class="by">CoS</div>
-        <div class="why">Kirsten + Michael home under 00_START HERE.</div>
-        <div class="why"><a href="https://drive.google.com/drive/folders/1W2p7BWcwJxLzeVYiIpnLUpzv34E8cGYZ" target="_blank" rel="noopener">Open folder</a></div>
-      </div>      <div class="item">
+        <span class="who">Originator pursue sister sheet</span>
+        <div class="by">Originator</div>
+        <div class="why">Status / To: / Kill / Last action.</div>
+        <div class="why"><a href="https://docs.google.com/spreadsheets/d/1ELIh56A2YW8j0zb0KZ7DijDk8J2W-uSSrzk_oD-N8ts" target="_blank" rel="noopener">Open sheet</a></div>
+        <div class="asof">as of Mon 9/7</div>
+      </div>
+      <div class="item">
         <span class="tag doc">Doc</span>
         <span class="who">KM seller-opportunity sheet</span>
         <div class="by">KM Research</div>
-        <div class="why">Webster + Tremont P1s live; Sun eve cycle 0 new P1s; named SOS/registry pulls closed Mon.</div>
         <div class="why"><a href="https://docs.google.com/spreadsheets/d/1rtIpEjkdJYAPdHuy6nfNwhZVoLVSHBfmayLwAWDl1ZM/edit" target="_blank" rel="noopener">Open sheet</a></div>
-      </div>      <div class="item">
+      </div>
+      <div class="item">
         <span class="tag doc">Doc</span>
-        <span class="who">Markets · Alcaraz + Polymarket scan (7 Sep)</span>
-        <div class="by">Markets</div>
-        <div class="why">HOLD tickets + quiet new-ideas pass. Paper only. On CoS computer (local).</div>
-      </div>      <div class="item">
+        <span class="who">421 E 6th Launch Strategy Memo</span>
+        <div class="by">KM Deals / CoS</div>
+        <div class="why"><a href="https://docs.google.com/document/d/1tF3zfv-LUYIw1E_OYdyhI6y3uRmYO38yibf3fz7PuPg/edit" target="_blank" rel="noopener">Open in Drive</a></div>
+      </div>
+      <div class="item">
         <span class="tag doc">Doc</span>
-        <span class="who">STR Denver memo</span>
-        <div class="by">STR desk</div>
-        <div class="why">CAUTION — primary-residence license only. On CoS computer (local).</div>
-      </div>      <div class="item">
+        <span class="who">STR memos (Phoenix CLEAR · NYC HARD NO · Houston/Austin CLEAR · Yield)</span>
+        <div class="by">STR Markets / Yield</div>
+        <div class="why">on CoS computer · <span class="path">/workspace/str-desk/memos/</span></div>
+        <div class="asof">as of Mon 9/7 afternoon</div>
+      </div>
+      <div class="item">
         <span class="tag doc">Doc</span>
-        <span class="who">Monday Prix shoot pack</span>
-        <div class="by">Marketing / CoS</div>
-        <div class="why">TikTok-style short verticals week of Sep 7. Draft only. On CoS computer (local).</div>
+        <span class="who">Weekly bot quality scorecard</span>
+        <div class="by">CoS Ops</div>
+        <div class="why">on CoS computer · <span class="path">/workspace/cos-ops/quality/2026-09-07-mon-scorecard.md</span></div>
       </div>
     </section>
   </div>
-  <footer>Public KM copy for Michael + Kirsten. CoS refreshes ~10am ET daily. Nothing on this page sends mail. No sealed/family litigation.</footer>
+  <footer>Opens on CoS computer and via Shared Drive / GitHub Pages for Kirsten. CoS refreshes after morning desks and when you ask. Nothing on this page sends mail. Sealed facts stay one line (CoS copy only).</footer>
 </body>
 </html>
