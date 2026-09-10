@@ -6,7 +6,6 @@
   <title>Command · Live</title>
   <meta http-equiv="refresh" content="300" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
-  <meta name="km-decide-api" content="/api/decide" />
   <style>
     :root {
       --bg: #111114; --card: #1c1c21; --line: #2c2c34; --text: #f2f1ec; --muted: #9a988e;
@@ -55,32 +54,17 @@
     .live-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ok); background: #17321c; padding: 3px 9px; border-radius: 99px; margin-left: 10px; vertical-align: middle; }
     .live-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(125,206,138,0.7); animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(125,206,138,0.55); } 70% { box-shadow: 0 0 0 8px rgba(125,206,138,0); } 100% { box-shadow: 0 0 0 0 rgba(125,206,138,0); } }
-
-    .decide-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .decide-actions button {
-      font: inherit; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
-      border-radius: 8px; padding: 6px 11px; cursor: pointer; border: 1px solid var(--line);
-      background: #151518; color: var(--text);
-    }
-    .decide-actions button:hover:not(:disabled) { filter: brightness(1.12); }
-    .decide-actions button:disabled { opacity: 0.42; cursor: not-allowed; }
-    .decide-actions .approve { background: #17321c; color: var(--ok); border-color: #2a4a32; }
-    .decide-actions .decline { background: #3a1f1f; color: var(--hold); border-color: #4a2a2a; }
-    .decide-actions .other { background: #17263a; color: var(--run); border-color: #24364a; }
-    .decide-status { font-size: 12px; margin-top: 6px; color: var(--ok); }
-    .decide-status.err { color: var(--hold); }
-    .item.decided .decide-actions { opacity: 0.55; }
-
+    
   </style>
 </head>
 <body>
   <header>
     <div class="header-row">
       <h1>Command <span class="live-pill"><span class="dot" aria-hidden="true"></span>Live</span></h1>
-      <div class="stamp">Tue 8 Sep 2026 · 10:40am ET · CoS</div>
+      <div class="stamp">Thu 10 Sep 2026 · 10:12am ET · CoS</div>
     </div>
     <div class="subtitle">Michael + Kirsten · draft only · nothing here sends mail</div>
-    <div class="hint">Decide is open; Waiting / Hold collapsed by default. Approve / Decline write to Asana (HMAC). Other opens the task. Public: <a href="https://mwelsh84.github.io/km-command-board/">mwelsh84.github.io/km-command-board</a> (no sealed).</div>
+    <div class="hint">Decide is open; Waiting / Hold collapsed by default. Each card shows as-of. Public: <a href="https://mwelsh84.github.io/km-command-board/">mwelsh84.github.io/km-command-board</a> (no sealed).</div>
   </header>
   <main>
     <section>
@@ -88,105 +72,103 @@
 
       <h3>Decide</h3>
       <div class="bucket">
-        <div class="item" data-task-gid="1218244286398772" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244286398772" data-sig-approve="c3c6f9b581dd5edbc42c72b39ae90bdfacaefe7fd02e1bf3c1bb2bb7c92ee60b" data-sig-decline="2916f55fd2a85e0f29b89f1960c00b8542b9a2f56c5f085cee183713d273ce24" data-sig-other="28cc2083d5643a0e2bf304f852d990dbaf4651078c2c51414b87a62a003d34a4">
+        <div class="item">
           <span class="tag need">Decide</span>
           <span class="who">Ops · Asana Advanced</span>
-          <div class="why">Upgrade vs team-of-four. Approve, deny, or delegate to Christine. Asana task still open (due today).</div>
-          <div class="asof">as of Tue 9/8 Asana live</div>
+          <div class="why">Ask: upgrade vs team-of-four | Why: Christine card + CoS Decide still open (due moved; Christine card due Fri 9/11) | Default if skip: leave park, no re-ask.</div>
+          <div class="asof">as of Thu 9/10 Asana live</div>
         </div>
-        <div class="item" data-task-gid="1218244215193427" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244215193427" data-sig-approve="fa20c60751578d07dced8956927d02628c95f7d5dd317371f30acd82795ab31c" data-sig-decline="3eb39f478116e3f54c0c30cf3ffe591850bd131c6d8fe61afcd9a5640a2d99ca" data-sig-other="05ada197a126f62eaa6b2dd82cd831e1db8da054684ff86e0452d6c50645246e">
+        <div class="item">
           <span class="tag need">Decide</span>
           <span class="who">Finance · Stephanie 2025 company packet</span>
-          <div class="why">Still unsent. One decide with Kirsten: send or kill (no nag).</div>
-          <div class="asof">as of Tue 9/8 Asana live · Mon finance still open</div>
+          <div class="why">Ask: send or kill with Kirsten (no nag) | Why: extended returns still waiting; SafeSend path known | Default if skip: Finance keeps prep memo only.</div>
+          <div class="asof">as of Thu 9/10 Asana live · last memo Tue 9/8</div>
         </div>
-        <div class="item" data-task-gid="" data-asana-url="" data-sig-approve="" data-sig-decline="" data-sig-other="">
+        <div class="item">
           <span class="tag need">Decide</span>
           <span class="who">Finance · QBO kirsten@ Access denied</span>
-          <div class="why">Keep laptop + Drive cheat sheet path; CoS computer still blocked. No password ask.</div>
-          <div class="asof">as of Mon–Tue · Missing if cleared since</div>
+          <div class="why">Ask: keep laptop + Drive cheat sheet, or Intuit unblock later | Why: CoS computer still blocked | Default if skip: laptop path; no password ask.</div>
+          <div class="asof">as of Tue 9/8 · Missing if cleared since</div>
         </div>
-        <div class="item" data-task-gid="1218244183839107" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244183839107" data-sig-approve="46201256f75d2c4d3034c85831e87913c3fc2a0e16e316a60ef3574ee8769fa8" data-sig-decline="caf902824e0f9f94cfe506ee806f6f676d19bd460a67b1724f26adeb8a9d8ae4" data-sig-other="2e93d5b3c2a5d05e3f739ecbadb58aa1c573667f85d2f59474a1ac6a80b5ddc6">
+        <div class="item">
           <span class="tag need">Decide</span>
           <span class="who">Money · John Walnut consulting invoice</span>
-          <div class="why">HOLD until you okay send (Christine/Kirsten hours).</div>
-          <div class="asof">as of Tue 9/8 Asana live</div>
+          <div class="why">Ask: okay to send (Christine/Kirsten hours) | Why: HOLD until you clear | Default if skip: stay HOLD.</div>
+          <div class="asof">as of Thu 9/10 Asana live</div>
         </div>
         <div class="item">
           <span class="tag need">Act</span>
-          <span class="who">Practice · Igor engagement</span>
-          <div class="why">He says he signed Sun/Mon eve — check spam for resend; ADU note attached. Sep 10 paper vs Sep 17 continuance still unanswered. No second chase until Wed if quiet.</div>
-          <div class="asof">as of Tue 9/8 ~8:10am law desk</div>
+          <span class="who">Practice · Igor engagement (20 Manson)</span>
+          <div class="why">Wed 9/9 ~3:36pm ET: Igor says he will resend signed docs tonight; timing Sep 10 vs Sep 17 — “you decide when ready for hearing.” Signed PDF still Missing in inbox/spam as of Tue chase. Today is the Sep 10 paper clock; Mass Code memo preferred Sep 17 continuance. No second chase until he resends or you reopen.</div>
+          <div class="asof">as of Wed 9/9 3:36pm ET Gmail · desks Thu failed</div>
         </div>
         <div class="item">
-          <span class="tag need">Post</span>
-          <span class="who">Affiliate · paste-ready drafts</span>
-          <div class="why">Cheirosa 48 + Mon weekly pack still in Affiliate chat. You post; desk does not. Tue 10am note not yet due at this stamp.</div>
-          <div class="asof">as of Mon 9/7 ~11:30am ET</div>
-        </div>
-        <div class="item">
-          <span class="tag need">Optional</span>
-          <span class="who">SEO · GSC indexing</span>
-          <div class="why">Optional: request indexing /projects + /services; apex sitemap preferred. Domains apex already DONE.</div>
-          <div class="asof">as of Mon 9/7 ~1:25pm Domains closed</div>
+          <span class="tag need">Clock</span>
+          <span class="who">Practice · DiBacco sit-down</span>
+          <div class="why">Fri 9/11 3–4pm ET Norfolk DA (Kyle Smith). Confirm drafts still HOLD; Bethany unreplied. KM calendar also shows Hearing for Kyle Smith Fri 9–12pm ET.</div>
+          <div class="asof">as of Tue 9/8 law desk + Thu calendar</div>
         </div>
       </div>
-
 
       <h3>Waiting</h3>
       <div class="bucket">
         <div class="item">
           <span class="tag wait">Waiting</span>
           <span class="who">Practice · Peng / HongRay / others</span>
-          <div class="why">Peng ball signed letter + money. HongRay / Tavares / 48 Garden waiting on them. DiBacco Fri 9/11 3–4pm on calendar; confirm drafts HOLD.</div>
-          <div class="asof">as of Tue 9/8 ~8:10am law desk</div>
+          <div class="why">Peng ball signed letter + money. HongRay / Tavares soft-hold / 48 Garden waiting on them.</div>
+          <div class="asof">as of Tue 9/8 · Thu law desk failed</div>
         </div>
         <div class="item">
           <span class="tag wait">Waiting</span>
           <span class="who">Buyers · Erin (Needs Kirsten)</span>
-          <div class="why">No Erin showing this week. Forward Fulton 2024/2025 financials (Lee-Anne Sat still in inbox) + Drive share requests since Sep 2. Not Michael unless you escalate.</div>
-          <div class="asof">as of Tue 9/8 ~10:05am Buyers</div>
+          <div class="why">Showing digest + buyers desks failed Thu. Last known: no Erin showing that week; Fulton financials + Drive shares on Kirsten. Not Michael unless escalate.</div>
+          <div class="asof">as of Tue 9/8 Buyers · Thu digest failed</div>
         </div>
         <div class="item">
           <span class="tag wait">Waiting</span>
           <span class="who">Ops · DocuSign Form Packets</span>
-          <div class="why">Still open in Needs Decision (Christine + Kirsten cards). Support cases auto-closed earlier.</div>
-          <div class="asof">as of Tue 9/8 Asana live</div>
+          <div class="why">Still incomplete in Needs Decision (Christine). Support cases auto-closed earlier.</div>
+          <div class="asof">as of Thu 9/10 Asana live</div>
         </div>
         <div class="item">
           <span class="tag wait">Waiting</span>
           <span class="who">Drive · Christine structure memo</span>
           <div class="why">Tree memo drafted — send when you write send.</div>
-          <div class="asof">as of Mon 9/7 ~2:08pm draft</div>
+          <div class="asof">as of Mon 9/7 draft</div>
         </div>
         <div class="item">
           <span class="tag wait">Waiting</span>
           <span class="who">Deals · Brokers Open Christine cards</span>
-          <div class="why">Event locked Thu 9/17 6–8pm. Agent blast already sent Fri. Asana Email Blast + Confirm Date + Guest List still OPEN (board lag; due moved to 9/9). RSVPs: Glovsky, Aurora, Witter-Aladesanmi.</div>
-          <div class="asof">as of Tue 9/8 ~9:20am Deals</div>
+          <div class="why">Event locked Thu 9/17 6–8pm. Agent blast already sent. Christine answering RSVPs; open Asana cards may lag.</div>
+          <div class="asof">as of Tue 9/8 Deals · Thu deals desk failed</div>
         </div>
       </div>
-
 
       <details class="hold-group">
         <summary>Hold (collapsed) · intentional / do not re-ask</summary>
         <div class="item">
           <span class="tag hold">Hold</span>
           <span class="who">Originator · HOLD ALL</span>
-          <div class="why">No outbound. Lowell Fri 9/11 10am attend-only if you reopen. Chen To: Missing. Pipeline quiet; new_P1=0.</div>
-          <div class="asof">as of Tue 9/8 8:25am pipeline · Michael Hold all 9/7</div>
+          <div class="why">No outbound (Michael 9/7). Lowell Fri 9/11 10am attend-only if you reopen. Chen To: Missing locked.</div>
+          <div class="asof">as of Tue 9/8 pipeline · Thu origination missed</div>
         </div>
         <div class="item">
           <span class="tag hold">Hold</span>
           <span class="who">Markets · live tickets</span>
-          <div class="why">Alcaraz / Sabalenka / Seahawks / Chargers HOLD. Book mid MTM +$4.61. Hard kills today: Sabalenka–Noskova 11:30am; Alcaraz–Shelton ~7pm. No LIVE KILL.</div>
-          <div class="asof">as of Tue 9/8 ~9:05am Markets</div>
+          <div class="why">Last settle note Tue 9/8: Sabalenka SF next; Alcaraz QF Shelton that night; Seahawks Wed 9/9; Chargers Sun 9/13. Actual realized P&amp;L $0 then. Wed–Thu markets settle desks failed — do not invent finals.</div>
+          <div class="asof">as of Tue 9/8 Markets · Thu note failed</div>
         </div>
         <div class="item">
           <span class="tag hold">Hold</span>
           <span class="who">Practice · Manson strategy / DiBacco drafts</span>
-          <div class="why">Manson HOLD until you ask. DiBacco confirm drafts hold; Bethany unreplied.</div>
-          <div class="asof">as of Tue 9/8 ~8:10am</div>
+          <div class="why">Manson strategy HOLD until you ask. DiBacco confirm drafts hold.</div>
+          <div class="asof">as of Tue 9/8</div>
+        </div>
+        <div class="item">
+          <span class="tag hold">Hold</span>
+          <span class="who">Affiliate desk</span>
+          <div class="why">Routines paused. Paste-ready drafts stay in Affiliate chat if you still want to post.</div>
+          <div class="asof">as of Tue 9/8 pause</div>
         </div>
       </details>
 
@@ -196,58 +178,40 @@
       <h2>Bots working</h2>
 
       <div class="item">
-        <span class="tag run">Live</span>
+        <span class="tag hold">Stale</span>
+        <span class="who">Morning desks cluster</span>
+        <div class="why">Thu 9/10: seller memo, sealed check, law, markets, buyers, deals, stock open/watchdog, showing digest, RealReal, BTC watchdog — automation status failed. Board uses last verified facts; no invented clocks.</div>
+        <div class="asof">as of Thu 9/10 10am ET routine status</div>
+      </div>
+      <div class="item">
+        <span class="tag hold">Stale</span>
         <span class="who">Stock Paper Trader</span>
-        <div class="why">READY. Open 3 — UNFI 363 / ROIV 250 / IONQ 284. Equity ~$99,900.22 paper. Caps ≤1%/idea · ≤3 open. Paper only.</div>
-        <div class="asof">as of Tue 9/8 ~10:35am ET fills</div>
+        <div class="why">Last HEARTBEAT Tue 9/8 ~3:34pm ET: READY · AUTH green · open IONQ 284 / ROIV 250 / UNFI 363 · equity ~$99,074 · day P&amp;L ~−0.93%. Thu open/watchdog failed — not re-quoted live.</div>
+        <div class="asof">as of Tue 9/8 HEARTBEAT</div>
       </div>
       <div class="item">
-        <span class="tag ok">Done</span>
-        <span class="who">Stock Research · first screen</span>
-        <div class="why">Proposed UNFI / ROIV / IONQ (handed to Paper). Propose only.</div>
-        <div class="asof">as of Tue 9/8 morning screen</div>
-      </div>
-      <div class="item">
-        <span class="tag run">Live</span>
+        <span class="tag hold">Stale</span>
         <span class="who">Paper BTC 5-min</span>
-        <div class="why">Alive. Equity ~$1,022.44 paper · 9 entries · 6–3 · 66.7% WR. Paper only.</div>
-        <div class="asof">as of Tue 9/8 ~10:37am ET</div>
+        <div class="why">Last status file Wed early UTC: equity ~$1,022.44 paper · 9 entries · 6–3 · 66.7% WR · alive then. File ~1.4 days old; Thu watchdog failed.</div>
+        <div class="asof">as of Wed 9/9 ~12:33am ET status.txt</div>
       </div>
       <div class="item">
         <span class="tag ok">Done</span>
-        <span class="who">Markets · morning edge</span>
-        <div class="why">Four tickets HOLD; no &gt;3¢ against overnight. Realized P&amp;L $0.</div>
-        <div class="asof">as of Tue 9/8 ~9:05am ET</div>
+        <span class="who">Markets · last edge (Tue)</span>
+        <div class="why">Four tickets HOLD then; no new idea scan claimed since. Settle desks failed after.</div>
+        <div class="asof">as of Tue 9/8</div>
       </div>
       <div class="item">
         <span class="tag ok">Done</span>
-        <span class="who">Pipeline + Originator pack</span>
-        <div class="why">Huddle ran; HOLD ALL outbound; seller memo quiet (new_P1=0). No pack.</div>
-        <div class="asof">as of Tue 9/8 7–8:25am</div>
+        <span class="who">Pipeline + Originator</span>
+        <div class="why">HOLD ALL outbound locked. Pursue sister sheet live.</div>
+        <div class="asof">as of Tue 9/8</div>
       </div>
       <div class="item">
         <span class="tag ok">Done</span>
         <span class="who">Deals · Brokers Open path</span>
-        <div class="why">Blast sent Fri. Locked Thu 9/17 6–8pm. Christine answering RSVPs / open Asana cards.</div>
-        <div class="asof">as of Tue 9/8 ~9:20am</div>
-      </div>
-      <div class="item">
-        <span class="tag run">Live</span>
-        <span class="who">STR Markets / Yield</span>
-        <div class="why">CLEAR Phoenix/Houston/Austin; HARD NO NYC. Rotation next: San Diego. Tue metro clocks Missing at this stamp (last pass Mon).</div>
-        <div class="asof">as of Mon 9/7 evening memos</div>
-      </div>
-      <div class="item">
-        <span class="tag ok">Done</span>
-        <span class="who">SEO · Domains apex + /guides</span>
-        <div class="why">Apex primary live; www→apex. Guides live.</div>
-        <div class="asof">as of Mon 9/7</div>
-      </div>
-      <div class="item">
-        <span class="tag ok">Done</span>
-        <span class="who">Marketing · Social Master Templates</span>
-        <div class="why">Canva folder · 6 MASTER + guide. Draft only.</div>
-        <div class="asof">as of Mon 9/7</div>
+        <div class="why">Blast sent; locked Thu 9/17 6–8pm. Christine RSVPs.</div>
+        <div class="asof">as of Tue 9/8</div>
       </div>
       <div class="item">
         <span class="tag hold">Blocked</span>
@@ -258,8 +222,14 @@
       <div class="item">
         <span class="tag hold">Blocked</span>
         <span class="who">Research · Pinergy MLS</span>
-        <div class="why">Sign-in handoff needed (empty form). RPR not opened. CAPTCHA queue unchanged.</div>
-        <div class="asof">as of Tue 9/8 7am seller memo</div>
+        <div class="why">Sign-in handoff needed. RPR not opened from CoS. Evening seller research failed Wed/Thu.</div>
+        <div class="asof">as of Tue 9/8 · Wed eve failed</div>
+      </div>
+      <div class="item">
+        <span class="tag run">Next</span>
+        <span class="who">KM SEO · Thursday brief</span>
+        <div class="why">Routine never fired yet today. GSC-fed three-item list for Prix when it runs.</div>
+        <div class="asof">as of Thu 9/10 · never run</div>
       </div>
 
     </section>
@@ -270,24 +240,31 @@
 
       <div class="item">
         <span class="tag doc">Doc</span>
+        <span class="who">Stephanie 2025 extended returns prep memo</span>
+        <div class="by">KM Finance / CoS</div>
+        <div class="why">Prep + SafeSend steps. File on CoS computer (ask Michael).</div>
+        <div class="asof">as of Tue 9/8</div>
+      </div>
+      <div class="item">
+        <span class="tag doc">Doc</span>
         <span class="who">Stock Research propose pack — 2026-09-08</span>
         <div class="by">Stock Research</div>
         <div class="why">UNFI / ROIV / IONQ long ideas. File on CoS computer (ask Michael).</div>
-        <div class="asof">as of Tue 9/8 morning</div>
+        <div class="asof">as of Tue 9/8</div>
       </div>
       <div class="item">
         <span class="tag doc">Doc</span>
         <span class="who">Markets live edge — four tickets</span>
         <div class="by">Markets</div>
         <div class="why">HOLD pack + MTM. File on CoS computer (ask Michael).</div>
-        <div class="asof">as of Tue 9/8 ~9:05am</div>
+        <div class="asof">as of Tue 9/8</div>
       </div>
       <div class="item">
         <span class="tag doc">Doc</span>
         <span class="who">Christine · KM Drive structure memo (tree draft)</span>
         <div class="by">CoS</div>
         <div class="why">Draft ready — send when Michael says send. File on CoS computer.</div>
-        <div class="asof">as of Mon 9/7 ~2:08pm</div>
+        <div class="asof">as of Mon 9/7</div>
       </div>
       <div class="item">
         <span class="tag doc">Doc</span>
@@ -322,12 +299,18 @@
         <span class="who">STR Desk Metro Tracker</span>
         <div class="by">STR Markets / Yield</div>
         <div class="why"><a href="https://docs.google.com/spreadsheets/d/1zmVg9HBncs977zSOjzLnHXexIOFUCdEwZp0dsYc2eIc/edit" target="_blank" rel="noopener">Open sheet</a></div>
-        <div class="asof">as of Mon 9/7</div>
+        <div class="asof">as of Mon–Tue memos</div>
+      </div>
+      <div class="item">
+        <span class="tag doc">Doc</span>
+        <span class="who">KM IG DM CRM sheet</span>
+        <div class="by">Christine / Prix</div>
+        <div class="why"><a href="https://docs.google.com/spreadsheets/d/14Eyz1c4hE-xW1AGShIymFuDhHFwe-D42QEm9rlACU3E/edit" target="_blank" rel="noopener">Open sheet</a></div>
+        <div class="asof">as of Tue 9/8</div>
       </div>
 
     </section>
   </div>
-  <footer>Opens on CoS computer and via Shared Drive / GitHub Pages for Kirsten. CoS refreshes after morning desks and when you ask. Approve / Decline comment + complete the Asana Decide task. Nothing on this page sends mail. Sealed facts stay off this public copy.</footer>
-  <script src="decide-board.js"></script>
+  <footer>Opens on CoS computer and via Shared Drive / GitHub Pages for Kirsten. CoS refreshes after morning desks and when you ask. Nothing on this page sends mail. Sealed facts stay off this public copy.</footer>
 </body>
 </html>
