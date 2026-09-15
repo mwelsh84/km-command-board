@@ -6,71 +6,7 @@
   <title>Command · Live</title>
   <meta http-equiv="refresh" content="300" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
-  <meta name="km-decide-api" content="/api/decide" />
-  <style>
-    :root {
-      --bg: #111114; --card: #1c1c21; --line: #2c2c34; --text: #f2f1ec; --muted: #9a988e;
-      --need: #e8a23a; --run: #6ea8ff; --ok: #7dce8a; --hold: #c07a7a; --wait: #c4b07a;
-      --doc: #b89ad4; --link: #8eb4ff;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
-    header { padding: 20px 24px 14px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(17,17,20,0.92); backdrop-filter: blur(8px); z-index: 10; }
-    .header-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-    h1 { font-size: 18px; font-weight: 600; margin: 0; }
-    .stamp { color: var(--muted); font-size: 13px; }
-    .subtitle { margin-top: 6px; color: var(--muted); font-size: 13px; }
-    .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    main { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; padding: 16px 24px 8px; }
-    .docs-wrap { padding: 0 24px 16px; }
-    .docs-wrap section { width: 100%; }
-    @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
-    section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 8px; }
-    h2 { margin: 0 0 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-    h3 { margin: 14px 0 6px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-    h3:first-of-type { margin-top: 0; }
-    details.hold-group { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 8px; }
-    details.hold-group > summary { cursor: pointer; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; list-style: none; }
-    details.hold-group > summary::-webkit-details-marker { display: none; }
-    details.hold-group > summary::before { content: "▸ "; }
-    details.hold-group[open] > summary::before { content: "▾ "; }
-    .item { padding: 10px 0; border-top: 1px solid var(--line); }
-    .item:first-of-type { border-top: none; }
-    .bucket .item:first-of-type { border-top: 1px solid var(--line); }
-    .who { font-weight: 600; }
-    .why { color: var(--muted); font-size: 13px; margin-top: 2px; }
-    .by { color: var(--muted); font-size: 12px; margin-top: 2px; }
-    .asof { color: var(--muted); font-size: 11px; margin-top: 4px; font-variant-numeric: tabular-nums; }
-    .tag { display: inline-block; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; margin-right: 6px; }
-    .need { background: #3a2d14; color: var(--need); }
-    .run { background: #17263a; color: var(--run); }
-    .ok { background: #17321c; color: var(--ok); }
-    .hold { background: #3a1f1f; color: var(--hold); }
-    .wait { background: #2f2a18; color: var(--wait); }
-    .doc { background: #2a1f35; color: var(--doc); }
-    a { color: var(--link); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .path { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
-    footer { padding: 0 24px 24px; color: var(--muted); font-size: 12px; }
-    .live-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ok); background: #17321c; padding: 3px 9px; border-radius: 99px; margin-left: 10px; vertical-align: middle; }
-    .live-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(125,206,138,0.7); animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(125,206,138,0.55); } 70% { box-shadow: 0 0 0 8px rgba(125,206,138,0); } 100% { box-shadow: 0 0 0 0 rgba(125,206,138,0); } }
-    .decide-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .decide-actions button {
-      font: inherit; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
-      border-radius: 8px; padding: 6px 11px; cursor: pointer; border: 1px solid var(--line);
-      background: #151518; color: var(--text);
-    }
-    .decide-actions button:hover:not(:disabled) { filter: brightness(1.12); }
-    .decide-actions button:disabled { opacity: 0.42; cursor: not-allowed; }
-    .decide-actions .approve { background: #17321c; color: var(--ok); border-color: #2a4a32; }
-    .decide-actions .decline { background: #3a1f1f; color: var(--hold); border-color: #4a2a2a; }
-    .decide-actions .other { background: #17263a; color: var(--run); border-color: #24364a; }
-    .decide-status { font-size: 12px; margin-top: 6px; color: var(--ok); }
-    .decide-status.err { color: var(--hold); }
-    .item.decided .decide-actions { opacity: 0.55; }
-
-  </style>
+  <link rel="stylesheet" href="command-board.css" />
 </head>
 <body>
   <header>
@@ -79,7 +15,7 @@
       <div class="stamp">Tue 15 Sep 2026 · ~10:52am ET · CoS</div>
     </div>
     <div class="subtitle">Michael + Kirsten · draft only · nothing here sends mail</div>
-    <div class="hint">Decide is open; Waiting / Hold collapsed by default. Approve / Decline write to Asana (HMAC). Other opens the task.</div>
+    <div class="hint">Decide is open; Waiting / Hold collapsed by default. Approve / Decline write to Asana. Other opens the task.</div>
   </header>
   <main>
     <section>
@@ -87,25 +23,25 @@
 
       <h3>Decide</h3>
       <div class="bucket">
-        <div class="item" data-task-gid="1218244286398772" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244286398772" data-sig-approve="c3c6f9b581dd5edbc42c72b39ae90bdfacaefe7fd02e1bf3c1bb2bb7c92ee60b" data-sig-decline="2916f55fd2a85e0f29b89f1960c00b8542b9a2f56c5f085cee183713d273ce24" data-sig-other="28cc2083d5643a0e2bf304f852d990dbaf4651078c2c51414b87a62a003d34a4">
+        <div class="item" data-task-gid="1218244286398772" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244286398772">
           <span class="tag need">Decide</span>
           <span class="who">Ops · Asana Advanced</span>
           <div class="why">Ask: upgrade vs team-of-four | Why: CoS Decide + Christine “To Upgrade Asana or Not?” still open | Default if skip: leave park, no re-ask.</div>
           <div class="asof">as of Tue 9/15 Asana live · still incomplete due 9/8</div>
         </div>
-        <div class="item" data-task-gid="1218244215193427" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244215193427" data-sig-approve="fa20c60751578d07dced8956927d02628c95f7d5dd317371f30acd82795ab31c" data-sig-decline="3eb39f478116e3f54c0c30cf3ffe591850bd131c6d8fe61afcd9a5640a2d99ca" data-sig-other="05ada197a126f62eaa6b2dd82cd831e1db8da054684ff86e0452d6c50645246e">
+        <div class="item" data-task-gid="1218244215193427" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244215193427">
           <span class="tag need">Decide</span>
           <span class="who">Finance · Stephanie 2025 company packet</span>
           <div class="why">Ask: send or kill with Kirsten (no nag) | Why: extended returns still waiting; SafeSend path known | Default if skip: Finance keeps prep memo only.</div>
           <div class="asof">as of Tue 9/15 Asana live · last memo Tue 9/8</div>
         </div>
-        <div class="item" data-task-gid="1218244183839107" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244183839107" data-sig-approve="46201256f75d2c4d3034c85831e87913c3fc2a0e16e316a60ef3574ee8769fa8" data-sig-decline="caf902824e0f9f94cfe506ee806f6f676d19bd460a67b1724f26adeb8a9d8ae4" data-sig-other="2e93d5b3c2a5d05e3f739ecbadb58aa1c573667f85d2f59474a1ac6a80b5ddc6">
+        <div class="item" data-task-gid="1218244183839107" data-asana-url="https://app.asana.com/1/1214552995115111/project/1215460449693075/task/1218244183839107">
           <span class="tag need">Decide</span>
           <span class="who">Money · John Walnut consulting invoice</span>
           <div class="why">Ask: okay to send (Christine/Kirsten hours) | Why: HOLD until you clear · Decide still open due 9/8 · Christine Send card due today | Default if skip: stay HOLD.</div>
           <div class="asof">as of Tue 9/15 Asana live · Deals desk</div>
         </div>
-        <div class="item" data-task-gid="" data-asana-url="" data-sig-approve="" data-sig-decline="" data-sig-other="">
+        <div class="item" data-task-gid="" data-asana-url="">
           <span class="tag need">Decide</span>
           <span class="who">Finance · QBO kirsten@ Access denied</span>
           <div class="why">Ask: keep laptop + Drive cheat sheet, or Intuit unblock later | Why: CoS computer still blocked | Default if skip: laptop path; no password ask.</div>
@@ -388,7 +324,7 @@
 
     </section>
   </div>
-  <footer>Opens via Shared Drive / GitHub Pages for Kirsten. CoS refreshes after morning desks and when you ask. Approve / Decline comment + complete the Asana Decide task. Nothing on this page sends mail.</footer>
+  <footer>Private Vercel board. CoS refreshes after morning desks and when you ask. Approve / Decline comment + complete the Asana Decide task. Nothing on this page sends mail.</footer>
   <script src="decide-board.js"></script>
 </body>
 </html>

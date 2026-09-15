@@ -1,22 +1,28 @@
 #!/usr/bin/env node
 /**
- * Local board + /api/decide. Optional MOCK_ASANA=1 skips live Asana.
+ * Local board + POST /api/decide. Optional MOCK_ASANA=1 skips live Asana.
  *
- *   APPROVAL_SECRET=dev npm run mint -- 1218244286398772 http://127.0.0.1:4173/api/decide
- *   APPROVAL_SECRET=dev MOCK_ASANA=1 node scripts/dev-server.mjs
+ *   MOCK_ASANA=1 npm run dev
+ *   http://127.0.0.1:4173/
  */
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { asanaToken } from "../lib/asana-decide.js";
-import { parseDecideInput, processDecide, resultHtml, corsOrigin } from "../lib/http-decide.js";
+import {
+  corsOrigin,
+  isJsonContentType,
+  parseDecideInput,
+  processDecide,
+} from "../lib/http-decide.js";
 
 const root = join(fileURLToPath(new URL("..", import.meta.url)));
 const port = Number(process.env.PORT || 4173);
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".txt": "text/plain; charset=utf-8",
   ".json": "application/json; charset=utf-8",
@@ -32,6 +38,8 @@ function mockFetch(url, opts = {}) {
   if (method === "PUT") {
     return { ok: true, json: async () => ({ data: { gid, completed: true } }) };
   }
+  const projectGid = process.env.ASANA_COMMAND_CENTER_PROJECT_GID || "1215460449693075";
+  const sectionGid = process.env.ASANA_NEEDS_DECISION_SECTION_GID || "1215460449693077";
   return {
     ok: true,
     json: async () => ({
@@ -41,6 +49,7 @@ function mockFetch(url, opts = {}) {
         completed: false,
         resource_subtype: "default_task",
         permalink_url: `https://app.asana.com/0/0/${gid}/f`,
+        memberships: [{ project: { gid: projectGid }, section: { gid: sectionGid } }],
       },
     }),
   };
@@ -53,10 +62,11 @@ function send(res, status, headers, body) {
 
 const server = createServer(async (req, res) => {
   const origin = String(req.headers.origin || "");
-  const allow = corsOrigin(origin);
+  const allow = corsOrigin(origin, process.env);
   if (allow) res.setHeader("Access-Control-Allow-Origin", allow);
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Cache-Control", "private, no-store");
 
   const url = new URL(req.url || "/", `http://127.0.0.1:${port}`);
 
@@ -66,32 +76,44 @@ const server = createServer(async (req, res) => {
   }
 
   if (url.pathname === "/api/decide") {
+    if (req.method !== "POST") {
+      send(
+        res,
+        405,
+        { "Content-Type": "application/json", Allow: "POST, OPTIONS" },
+        JSON.stringify({ ok: false, error: "Method not allowed" })
+      );
+      return;
+    }
+    if (!isJsonContentType(req.headers["content-type"])) {
+      send(
+        res,
+        415,
+        { "Content-Type": "application/json" },
+        JSON.stringify({ ok: false, error: "Content-Type must be application/json" })
+      );
+      return;
+    }
     let raw = "";
     for await (const chunk of req) raw += chunk;
     let input;
     try {
-      input = parseDecideInput({
-        query: Object.fromEntries(url.searchParams),
-        body: raw,
-      });
+      input = parseDecideInput({ body: raw });
     } catch (err) {
       send(res, 400, { "Content-Type": "application/json" }, JSON.stringify({ ok: false, error: err.message }));
       return;
     }
     const mock = process.env.MOCK_ASANA === "1";
-    const env = mock && !asanaToken(process.env)
-      ? { ...process.env, ASANA_PAT: "mock" }
-      : process.env;
+    const env = {
+      ...process.env,
+      ASANA_COMMAND_CENTER_PROJECT_GID:
+        process.env.ASANA_COMMAND_CENTER_PROJECT_GID || "1215460449693075",
+      ASANA_NEEDS_DECISION_SECTION_GID:
+        process.env.ASANA_NEEDS_DECISION_SECTION_GID || "1215460449693077",
+    };
+    if (mock && !asanaToken(process.env)) env.ASANA_PAT = "mock";
     const deps = mock ? { fetchImpl: mockFetch } : {};
     const out = await processDecide(input, env, deps);
-    const accept = String(req.headers.accept || "");
-    const html = req.method === "GET" && !accept.includes("application/json");
-    if (html) {
-      const error = out.json?.ok ? null : out.json?.error;
-      const result = out.json?.ok ? out.json : { action: input.action, permalink: "" };
-      send(res, out.status, { "Content-Type": "text/html; charset=utf-8" }, resultHtml(result, error));
-      return;
-    }
     send(res, out.status, { "Content-Type": "application/json" }, JSON.stringify(out.json));
     return;
   }

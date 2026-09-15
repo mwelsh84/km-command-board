@@ -1,20 +1,67 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { applyDecide, commentText, completionPayload } from "../lib/asana-decide.js";
+import {
+  applyDecide,
+  commentText,
+  completionPayload,
+  isAlreadyDecided,
+  taskInAuthorizedWorkflow,
+} from "../lib/asana-decide.js";
+
+const PROJECT = "1215460449693075";
+const SECTION = "1215460449693077";
+const gid = "1218244286398772";
+
+function authorizedTask(overrides = {}) {
+  return {
+    gid,
+    name: "Asana Advanced",
+    completed: false,
+    resource_subtype: "default_task",
+    permalink_url: `https://app.asana.com/0/0/${gid}/f`,
+    memberships: [{ project: { gid: PROJECT }, section: { gid: SECTION } }],
+    ...overrides,
+  };
+}
+
+function mockFetch(task, { completeFails = false, commentFails = false } = {}) {
+  const calls = [];
+  const fetchImpl = async (url, opts = {}) => {
+    const method = opts.method || "GET";
+    calls.push({ url, method, body: opts.body });
+    if (String(url).includes("/stories")) {
+      if (commentFails) {
+        return { ok: false, status: 500, json: async () => ({ errors: [{ message: "story fail" }] }) };
+      }
+      return { ok: true, json: async () => ({ data: { gid: "story" } }) };
+    }
+    if (method === "PUT") {
+      if (completeFails) {
+        return { ok: false, status: 400, json: async () => ({ errors: [{ message: "nope" }] }) };
+      }
+      return { ok: true, json: async () => ({ data: { ...task, completed: true } }) };
+    }
+    return { ok: true, json: async () => ({ data: task }) };
+  };
+  return { fetchImpl, calls };
+}
+
+function storyTexts(calls) {
+  return calls
+    .filter((call) => String(call.url).includes("/stories"))
+    .map((call) => JSON.parse(call.body).data.text);
+}
 
 describe("asana decide payloads", () => {
-  it("builds approve / decline comments", () => {
-    assert.equal(commentText("approve", {}), "Approved via Command");
+  it("builds approve / decline comments without a client actor", () => {
+    assert.equal(commentText("approve"), "Approved via KM Command Board.");
+    assert.equal(commentText("approve", { actor: "Michael" }), "Approved via KM Command Board.");
+    assert.equal(commentText("decline"), "Declined via KM Command Board.");
     assert.equal(
-      commentText("approve", { actor: "Michael" }),
-      "Approved via Command\n\nActor: Michael"
+      commentText("decline", { note: "Not this quarter.", actor: "Michael" }),
+      "Declined via KM Command Board.\n\nNot this quarter."
     );
-    assert.equal(commentText("decline", {}), "Declined via Command");
-    assert.equal(
-      commentText("decline", { note: "Not this quarter." }),
-      "Declined via Command\n\nNot this quarter."
-    );
-    assert.equal(commentText("other", {}), "Opened for discussion via Command");
+    assert.throws(() => commentText("other"), /approve or decline/);
   });
 
   it("completes default tasks and sets approval_status on approval subtype", () => {
@@ -28,96 +75,127 @@ describe("asana decide payloads", () => {
       approval_status: "rejected",
     });
   });
+
+  it("detects already-decided tasks", () => {
+    assert.equal(isAlreadyDecided({ completed: true }), true);
+    assert.equal(isAlreadyDecided({ completed: false, approval_status: "approved" }), true);
+    assert.equal(isAlreadyDecided({ completed: false, approval_status: "rejected" }), true);
+    assert.equal(isAlreadyDecided({ completed: false, approval_status: "pending" }), false);
+  });
+
+  it("requires the Command Center project and Needs Decision section", () => {
+    assert.equal(taskInAuthorizedWorkflow(authorizedTask(), PROJECT, SECTION), true);
+    assert.equal(
+      taskInAuthorizedWorkflow(
+        authorizedTask({
+          memberships: [{ project: { gid: "999999999999999" }, section: { gid: SECTION } }],
+        }),
+        PROJECT,
+        SECTION
+      ),
+      false
+    );
+    assert.equal(
+      taskInAuthorizedWorkflow(
+        authorizedTask({
+          memberships: [{ project: { gid: PROJECT }, section: { gid: "999999999999999" } }],
+        }),
+        PROJECT,
+        SECTION
+      ),
+      false
+    );
+  });
 });
 
 describe("applyDecide", () => {
-  function mockFetch(task, { completeFails = false } = {}) {
-    const calls = [];
-    const fetchImpl = async (url, opts = {}) => {
-      calls.push({ url, method: opts.method || "GET", body: opts.body });
-      if (url.includes("/stories")) {
-        return { ok: true, json: async () => ({ data: { gid: "story" } }) };
-      }
-      if ((opts.method || "GET") === "PUT") {
-        if (completeFails) return { ok: false, status: 400, json: async () => ({ errors: [{ message: "nope" }] }) };
-        return { ok: true, json: async () => ({ data: task }) };
-      }
-      return { ok: true, json: async () => ({ data: task }) };
-    };
-    return { fetchImpl, calls };
-  }
-
-  it("approve comments then marks a default_task complete", async () => {
-    const task = {
-      gid: "1218244286398772",
-      name: "Asana Advanced",
-      completed: false,
-      resource_subtype: "default_task",
-      permalink_url: "https://app.asana.com/1/x/project/p/task/1218244286398772",
-    };
+  it("approve updates the task first, then posts one audit comment", async () => {
+    const task = authorizedTask();
     const { fetchImpl, calls } = mockFetch(task);
     const result = await applyDecide(
-      { taskGid: task.gid, action: "approve", actor: "Michael" },
-      { token: "pat", fetchImpl }
+      { taskGid: task.gid, action: "approve" },
+      { token: "pat", fetchImpl, projectGid: PROJECT, sectionGid: SECTION }
     );
     assert.equal(result.ok, true);
+    assert.equal(result.alreadyDecided, false);
     assert.equal(result.completed, true);
-    assert.equal(result.permalink, task.permalink_url);
-    assert.equal(calls.some((c) => c.url.includes("/stories")), true);
-    const put = calls.find((c) => c.method === "PUT");
-    assert.equal(JSON.parse(put.body).data.completed, true);
-    const story = calls.find((c) => c.url.includes("/stories"));
-    assert.match(JSON.parse(story.body).data.text, /Approved via Command/);
+    const putIndex = calls.findIndex((call) => call.method === "PUT");
+    const storyIndex = calls.findIndex((call) => String(call.url).includes("/stories"));
+    assert.ok(putIndex >= 0);
+    assert.ok(storyIndex > putIndex);
+    assert.equal(storyTexts(calls).length, 1);
+    assert.equal(storyTexts(calls)[0], "Approved via KM Command Board.");
+    assert.equal(JSON.parse(calls[putIndex].body).data.completed, true);
   });
 
-  it("decline comments with Declined prefix then completes", async () => {
-    const task = {
-      gid: "1218244183839107",
-      completed: false,
-      resource_subtype: "default_task",
-      permalink_url: "https://app.asana.com/0/0/1218244183839107/f",
-    };
+  it("decline updates the task first, then posts one audit comment with the note", async () => {
+    const task = authorizedTask({ gid: "1218244183839107" });
     const { fetchImpl, calls } = mockFetch(task);
     await applyDecide(
       { taskGid: task.gid, action: "decline", note: "Hold send." },
-      { token: "pat", fetchImpl }
+      { token: "pat", fetchImpl, projectGid: PROJECT, sectionGid: SECTION }
     );
-    const story = calls.find((c) => c.url.includes("/stories"));
-    assert.match(JSON.parse(story.body).data.text, /^Declined via Command/);
-    assert.match(JSON.parse(story.body).data.text, /Hold send/);
+    assert.equal(storyTexts(calls).length, 1);
+    assert.equal(storyTexts(calls)[0], "Declined via KM Command Board.\n\nHold send.");
   });
 
-  it("other returns permalink and does not complete or comment", async () => {
-    const task = {
-      gid: "1218244215193427",
-      completed: false,
-      resource_subtype: "default_task",
-      permalink_url: "https://app.asana.com/1/x/project/p/task/1218244215193427",
-    };
+  it("rejects a task outside the authorized project", async () => {
+    const task = authorizedTask({
+      memberships: [{ project: { gid: "111111111111111" }, section: { gid: SECTION } }],
+    });
+    const { fetchImpl, calls } = mockFetch(task);
+    await assert.rejects(
+      () =>
+        applyDecide(
+          { taskGid: task.gid, action: "approve" },
+          { token: "pat", fetchImpl, projectGid: PROJECT, sectionGid: SECTION }
+        ),
+      (err) => err.status === 403
+    );
+    assert.equal(calls.some((call) => call.method === "PUT"), false);
+    assert.equal(storyTexts(calls).length, 0);
+  });
+
+  it("rejects a task outside the authorized Needs Decision section", async () => {
+    const task = authorizedTask({
+      memberships: [{ project: { gid: PROJECT }, section: { gid: "222222222222222" } }],
+    });
+    const { fetchImpl, calls } = mockFetch(task);
+    await assert.rejects(
+      () =>
+        applyDecide(
+          { taskGid: task.gid, action: "approve" },
+          { token: "pat", fetchImpl, projectGid: PROJECT, sectionGid: SECTION }
+        ),
+      (err) => err.status === 403
+    );
+    assert.equal(storyTexts(calls).length, 0);
+  });
+
+  it("does not comment or reverse an already-decided task", async () => {
+    const task = authorizedTask({ completed: true, approval_status: "approved" });
     const { fetchImpl, calls } = mockFetch(task);
     const result = await applyDecide(
-      { taskGid: task.gid, action: "other" },
-      { token: "pat", fetchImpl }
+      { taskGid: task.gid, action: "decline", note: "flip it" },
+      { token: "pat", fetchImpl, projectGid: PROJECT, sectionGid: SECTION }
     );
+    assert.equal(result.alreadyDecided, true);
     assert.equal(result.wrote, false);
-    assert.equal(result.permalink, task.permalink_url);
-    assert.equal(calls.some((c) => c.url.includes("/stories")), false);
-    assert.equal(calls.some((c) => c.method === "PUT"), false);
+    assert.equal(calls.some((call) => call.method === "PUT"), false);
+    assert.equal(storyTexts(calls).length, 0);
   });
 
-  it("skips complete when the task is already done", async () => {
-    const task = {
-      gid: "1",
-      completed: true,
-      resource_subtype: "default_task",
-      permalink_url: "https://app.asana.com/0/0/1/f",
-    };
-    const { fetchImpl, calls } = mockFetch(task);
-    const result = await applyDecide(
-      { taskGid: "11111", action: "approve" },
-      { token: "pat", fetchImpl }
+  it("does not post a success comment when the Asana update fails", async () => {
+    const task = authorizedTask();
+    const { fetchImpl, calls } = mockFetch(task, { completeFails: true });
+    await assert.rejects(
+      () =>
+        applyDecide(
+          { taskGid: task.gid, action: "approve" },
+          { token: "pat", fetchImpl, projectGid: PROJECT, sectionGid: SECTION }
+        ),
+      (err) => err.status === 502
     );
-    assert.equal(result.alreadyCompleted, true);
-    assert.equal(calls.some((c) => c.method === "PUT"), false);
+    assert.equal(storyTexts(calls).length, 0);
   });
 });
