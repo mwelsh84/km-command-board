@@ -7,7 +7,6 @@
   },
   "scripts": {
     "test": "node --test",
-    "mint": "node scripts/mint-decide-url.mjs",
     "dev": "node scripts/dev-server.mjs"
   }
 }

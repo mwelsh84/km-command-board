@@ -1,7 +1,5 @@
 (function () {
-  const api =
-    document.querySelector('meta[name="km-decide-api"]')?.getAttribute("content")?.trim() ||
-    "/api/decide";
+  const api = "/api/decide";
 
   function statusEl(item) {
     let el = item.querySelector(".decide-status");
@@ -20,10 +18,12 @@
     el.classList.toggle("err", kind === "err");
   }
 
-  function wiredFor(item, action) {
-    const gid = item.getAttribute("data-task-gid") || "";
-    const sig = item.getAttribute("data-sig-" + action) || "";
-    return /^\d{5,}$/.test(gid) && /^[0-9a-fA-F]{64}$/.test(sig);
+  function taskGidOf(item) {
+    return item.getAttribute("data-task-gid") || "";
+  }
+
+  function hasTaskGid(item) {
+    return /^\d{5,}$/.test(taskGidOf(item));
   }
 
   function inject(item) {
@@ -56,37 +56,29 @@
     const permalink = item.getAttribute("data-asana-url") || "";
     item.querySelectorAll(".decide-actions button").forEach((btn) => {
       const action = btn.dataset.action;
-      if (action === "other" && permalink) {
-        btn.disabled = false;
-        btn.title = "Open the Asana task";
+      if (action === "other") {
+        btn.disabled = !permalink;
+        btn.title = permalink ? "Open the Asana task" : "CoS: set data-asana-url";
         return;
       }
-      if (wiredFor(item, action)) {
+      if (hasTaskGid(item)) {
         btn.disabled = false;
         btn.title = "";
         return;
       }
       btn.disabled = true;
-      btn.title =
-        action === "other"
-          ? "CoS: set data-asana-url (or mint data-sig-other)"
-          : "CoS: set data-task-gid and mint data-sig-" + action + " (npm run mint)";
+      btn.title = "CoS: set data-task-gid from the Asana Decide task";
     });
   }
 
   async function callApi(item, action, extra) {
-    const taskGid = item.getAttribute("data-task-gid") || "";
-    const sig = item.getAttribute("data-sig-" + action) || "";
+    const body = { taskGid: taskGidOf(item), action };
+    if (action === "decline" && extra.note) body.note = extra.note;
     const res = await fetch(api, {
       method: "POST",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        taskGid,
-        action,
-        sig,
-        actor: extra.actor || undefined,
-        note: extra.note || undefined,
-      }),
+      body: JSON.stringify(body),
     });
     let data = null;
     try {
@@ -102,30 +94,20 @@
     return data;
   }
 
-  function openAsana(item, permalink) {
-    const url = permalink || item.getAttribute("data-asana-url") || "";
+  function openAsana(item) {
+    const url = item.getAttribute("data-asana-url") || "";
     if (url) window.open(url, "_blank", "noopener");
+    return url;
   }
 
   async function onAction(item, action) {
     if (action === "other") {
-      const permalink = item.getAttribute("data-asana-url") || "";
-      if (permalink) openAsana(item, permalink);
-      if (wiredFor(item, "other")) {
-        try {
-          const data = await callApi(item, "other", {});
-          if (!permalink && data.permalink) openAsana(item, data.permalink);
-        } catch (err) {
-          if (!permalink) setStatus(item, err.message, "err");
-        }
-      } else if (!permalink) {
-        setStatus(item, "No Asana URL on this card yet.", "err");
-      }
+      if (!openAsana(item)) setStatus(item, "No Asana URL on this card yet.", "err");
       return;
     }
 
-    if (!wiredFor(item, action)) {
-      setStatus(item, "This card is waiting for a CoS HMAC signature.", "err");
+    if (!hasTaskGid(item)) {
+      setStatus(item, "This card is waiting for an Asana task GID.", "err");
       return;
     }
 
@@ -143,7 +125,7 @@
     try {
       const data = await callApi(item, action, { note });
       const done = action === "approve" ? "Approved in Asana" : "Declined in Asana";
-      setStatus(item, data.alreadyCompleted ? done + " (already complete)" : done);
+      setStatus(item, data.alreadyDecided ? "Already decided in Asana" : done);
       item.classList.add("decided");
     } catch (err) {
       setStatus(item, err.message, "err");

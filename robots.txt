@@ -1,2 +1,4 @@
+# Not a security control. Crawlers may ignore this file.
+# Access is enforced by Vercel Authentication, not by robots.txt.
 User-agent: *
 Disallow: /
